@@ -1,4 +1,3 @@
-* annex.backend=MD5E
 **/.git* annex.largefiles=nothing
 * annex.largefiles=(largerthan=100kb)
 *.json annex.largefiles=nothing
@@ -7,3 +6,7 @@
 *.nii.gz annex.largefiles=anything
 *.tgz annex.largefiles=anything
 *_scans.tsv annex.largefiles=anything
+# annex event files as they contain subjects behavioral responses
+sub-*/**/*_events.tsv annex.largefiles=anything
+*.bk2 annex.largefiles=anything
+.bidsignore annex.largefiles=nothing
