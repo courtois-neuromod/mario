@@ -13,8 +13,6 @@
   "DeviceSerialNumber": "167006",
   "DwellTime": 2.1e-06,
   "EchoTime": 0.037,
-  "EchoTime1": 0.037,
-  "EchoTime2": 0.001,
   "EchoTrainLength": 104,
   "EffectiveEchoSpacing": 0.000560011,
   "FlipAngle": 52,
@@ -32,10 +30,9 @@
   "ImageType": [
     "ORIGINAL",
     "PRIMARY",
-    "P",
+    "M",
     "ND",
-    "MOSAIC",
-    "PHASE"
+    "MOSAIC"
   ],
   "ImagingFrequency": 123.259,
   "InPlanePhaseEncodingDirectionDICOM": "COL",
@@ -146,7 +143,6 @@
   "SoftwareVersions": "syngo MR E11",
   "SpacingBetweenSlices": 2,
   "StationName": "MRC35049",
-  "TaskName": "mario",
   "TotalReadoutTime": 0.0576811,
   "TxRefAmp": 247.594,
   "WipMemBlock": "29a7d452-78b7-415d-8668-0bd61f724a4e||Sequence: R016 ve11c/master r/e634e98; Dec 19 2017 11:00:25 by eja"
