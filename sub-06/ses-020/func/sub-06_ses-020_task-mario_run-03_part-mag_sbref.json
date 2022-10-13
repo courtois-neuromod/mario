@@ -16,7 +16,7 @@
   "EchoTrainLength": 104,
   "EffectiveEchoSpacing": 0.000560011,
   "FlipAngle": 52,
-  "HeudiconvVersion": "0.10.0",
+  "HeudiconvVersion": "0.11.3.post9+gc939bf8",
   "ImageComments": "Single-band reference",
   "ImageOrientationPatientDICOM": [
     0.999218,
