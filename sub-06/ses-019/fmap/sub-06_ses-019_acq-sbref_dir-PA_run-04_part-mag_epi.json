@@ -143,7 +143,6 @@
   "SoftwareVersions": "syngo MR E11",
   "SpacingBetweenSlices": 2,
   "StationName": "MRC35049",
-  "TaskName": "mario",
   "TotalReadoutTime": 0.0576811,
   "TxRefAmp": 246.487,
   "WipMemBlock": "b98d7128-3a0a-4fa9-941b-9a0deb2d6b1e||Sequence: R016 ve11c/master r/e634e98; Dec 19 2017 11:00:25 by eja"
