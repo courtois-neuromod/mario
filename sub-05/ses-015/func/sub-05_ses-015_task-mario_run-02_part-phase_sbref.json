@@ -36,12 +36,15 @@
     "ND",
     "MOSAIC",
     "PHASE"
-  ],
+],
   "ImagingFrequency": 123.259,
   "InPlanePhaseEncodingDirectionDICOM": "COL",
   "InstitutionAddress": "Chemin Queen-Mary 4565,Montreal,District,CA,H3W 1W5",
   "InstitutionName": "IUGM",
   "InstitutionalDepartmentName": "Department",
+  "IntendedFor": [
+    "ses-011/func/sub-03_ses-011_task-mario_run-02_part-mag_bold.nii.gz"
+],
   "MRAcquisitionType": "2D",
   "MagneticFieldStrength": 3,
   "Manufacturer": "Siemens",
