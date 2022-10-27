@@ -2,3 +2,7 @@
 	path = stimuli
 	url = git@github.com:courtois-neuromod/mario.stimuli.git
 	datalad-url = git@github.com:courtois-neuromod/mario.stimuli.git
+[submodule ".heudiconv"]
+	path = .heudiconv
+	url = ./.heudiconv
+	datalad-id = cb6f5d86-b0e4-46bb-b6b4-e7d010507a4c
