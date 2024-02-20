@@ -1,0 +1,3 @@
+pandas
+stable-retro
+git@github.com:courtois-neuromod/videogames_tools.git
