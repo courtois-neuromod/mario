@@ -2,8 +2,11 @@ import argparse
 import os
 import os.path as op
 from videogames_tools.replay.replay import get_variables_from_replay
+from videogames_tools.visualization.visualization import make_movie
 import retro
 import pandas as pd
+import json
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -16,26 +19,115 @@ parser.add_argument(
 parser.add_argument(
     "-s",
     "--stimuli",
-    default='./stimuli',
+    default='./stimuli',#'/home/hyruuk/DATA/mario/stimuli',
     type=str,
     help="Data path to look for the stimuli files (rom, state files, data.json etc...).",
 )
 
+def count_kills(repvars):
+    kill_count = 0
+    for i in range(6):
+        for idx, val in enumerate(repvars[f'enemy_kill3{i}'][:-1]):
+            if val in [4, 34, 132]:
+                if repvars[f'enemy_kill3{i}'][idx+1] != val:
+                    if i == 5:
+                        if repvars['powerup_yes_no'] == 0:
+                            kill_count += 1
+                    else:
+                        kill_count += 1
+    return kill_count
+
+def count_bricks_destroyed(repvars):
+    score_increments = list(np.diff(repvars['score']))
+    bricks_destroyed = 0
+    for idx, inc in enumerate(score_increments):
+        if inc == 5:
+            if repvars['jump_airborne'][idx] == 1:
+                bricks_destroyed += 1
+    return bricks_destroyed
+
+def count_hits_taken(repvars):
+    diff_state = list(np.diff(repvars['powerstate']))
+    # count powerups lost
+    hits_count = 0
+    for idx, val in enumerate(diff_state):
+        if val < -10000:
+            hits_count += 1
+
+    # count lives lost
+    diff_lives = list(np.diff(repvars['lives']))
+    for idx, val in enumerate(diff_lives):
+        if val < 0:
+            hits_count += 1
+    return hits_count
+
+def count_powerups_collected(repvars):
+    powerup_count = 0
+    for idx, val in enumerate(repvars['player_state'][:-1]):
+        if val in [9,12,13]:
+            if repvars['player_state'][idx+1] != val:
+                powerup_count += 1
+    return powerup_count
 
 def create_info_dict(repvars):
     info_dict = {}
+
+    # world
+    info_dict['world'] = repvars['level'].split('-')[1][1]
+
+    # level
+    info_dict['level'] = repvars['level'].split('-')[1][-1]
+
+    # duration
+    info_dict['duration'] = len(repvars['score']) / 60
+
+    # terminated
+    info_dict['terminated'] = repvars['terminate'][-1]==True
+
+    # cleared
+    info_dict['cleared'] = all([repvars['terminate'][-1]==True, repvars['lives'][-1] >= 0])
+
+    # final_score
+    info_dict['final_score'] = repvars['score'][-1]
+
+    # final_position
+    # Position is encoded by these two variables. I assume that xscrollHi starts at 1 and is incremented
+    # by 1 everytime xscrollLo reaches 256.
+    info_dict['final_position'] = repvars['xscrollLo'][-1] + (256*(repvars['xscrollHi'][-1]))
+
+    # lives_lost
+    info_dict['lives_lost'] = 2 - repvars['lives'][-1]
+
+    # hits taken
+    info_dict['hits_taken'] = count_hits_taken(repvars)
+
+    # number of enemies killed
+    info_dict['enemies_killed'] = count_kills(repvars)
+
+    # number of powerups collected
+    info_dict['powerups_collected'] = count_powerups_collected(repvars)
+
+    # number of bricks destroyed
+    info_dict['bricks_destroyed'] = count_bricks_destroyed(repvars)
+
+    # number of coins collected
+    info_dict['coins'] = repvars['coins'][-1]
+
     return info_dict
+
+
 
 def main(args):
     # Get datapath
     DATA_PATH = args.datapath
     if DATA_PATH == ".":
         print("No data path specified. Searching files in this folder.")
-    print('Generating annotations for the mario dataset in : {DATA_PATH}')
+    print(f'Generating annotations for the mario dataset in : {DATA_PATH}')
     # Import stimuli
     stimuli_path = op.join(args.stimuli)
     # stimuli_path = '/home/hyruuk/GitHub/neuromod/mario.stimuli/SuperMarioBros-Nes'
     retro.data.Integrations.add_custom_path(stimuli_path)
+    
     # Walk through all folders looking for .bk2 files
     for root, folder, files in os.walk(DATA_PATH):
         if not "sourcedata" in root:
@@ -53,9 +145,31 @@ def main(args):
                                 print("Adding : " + bk2_file)
                                 #bk2_fname = op.join(DATA_PATH, bk2_file)
                                 if op.exists(bk2_file):
-                                    print(bk2_file)
+                                    
                                     # Get replay
-                                    #repvars = get_variables_from_replay(bk2_file, skip_first_step=False, inttype=retro.data.Integrations.CUSTOM_ONLY)
+                                    repvars, frames = get_variables_from_replay(bk2_file, skip_first_step=bk2_idx==0, inttype=retro.data.Integrations.CUSTOM_ONLY)
+                                    runvars.append(repvars)
+                                    info_dict = create_info_dict(repvars)
+
+                                    # write info_dict to json file
+                                    json_sidecar_fname = bk2_file.replace(".bk2", ".json")
+                                    with open(json_sidecar_fname, 'w') as f:
+                                        json.dump(info_dict, f)
+
+                                    # TODO : confirm video and variables encoding
+                                    # write repvars dict as npz
+                                    npz_sidecar_fname = bk2_file.replace(".bk2", ".npz")
+                                    np.savez(npz_sidecar_fname, **repvars)
+                            
+                                    # write video file
+                                    buttons = ["A", "UP", "DOWN", "LEFT", "RIGHT", "B"]
+                                    actions = []
+                                    for butt in buttons:
+                                        actions.append(repvars[butt])
+                                    video_path = json_sidecar_fname.replace(".json", ".mp4")
+                                    make_movie(video_path, np.array(frames), np.array(actions).T)
+                                    
+                                    
 if __name__ == "__main__":
     args = parser.parse_args()
     main(args)
