@@ -7,6 +7,9 @@ import retro
 import pandas as pd
 import json
 import numpy as np
+import pickle
+from retro.scripts.playback_movie import playback_movie
+from numpy import load
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -19,7 +22,7 @@ parser.add_argument(
 parser.add_argument(
     "-s",
     "--stimuli",
-    default='./stimuli',#'/home/hyruuk/DATA/mario/stimuli',
+    default='./stimuli',
     type=str,
     help="Data path to look for the stimuli files (rom, state files, data.json etc...).",
 )
@@ -115,7 +118,33 @@ def create_info_dict(repvars):
 
     return info_dict
 
+def format_repvars_dict(bk2_file, emulator):
+    npy_file = bk2_file.replace(".bk2", ".npz")
+    with load(npy_file, allow_pickle=True) as data:
+        info = data['info']
+        actions = data['actions']
+    
+    repvars = {}
+    # Fill variables
+    for key in info[0].keys():
+        repvars[key] = []
+    for frame in info:
+        for key in repvars.keys():
+            repvars[key].append(frame[key])
+    # Fill actions
+    for idx_button, button in enumerate(emulator.buttons):
+        repvars[button] = []
+        for frame in actions:
+            repvars[button].append(frame[idx_button])
 
+    repvars['filename'] = bk2_file
+    repvars["level"] = bk2_file.split("/")[-1].split("_")[-2]
+    repvars["subject"] = bk2_file.split("/")[-1].split("_")[0]
+    repvars["session"] = bk2_file.split("/")[-1].split("_")[1]
+    repvars["repetition"] = bk2_file.split("/")[-1].split("_")[-1].split(".")[0]
+    repvars["terminate"] = [True] # ... I don't know how to get this info from the playback_movie function or the emulator object
+        
+    return repvars
 
 def main(args):
     # Get datapath
@@ -139,16 +168,33 @@ def main(args):
                         print(f"Processing : {file}")
                         events_dataframe = pd.read_table(run_events_file)
                         bk2_files = events_dataframe['stim_file'].values.tolist()
-                        runvars = []
                         for bk2_idx, bk2_file in enumerate(bk2_files):
                             if bk2_file != "Missing file" and type(bk2_file) != float:
                                 print("Adding : " + bk2_file)
                                 #bk2_fname = op.join(DATA_PATH, bk2_file)
                                 if op.exists(bk2_file):
-                                    
-                                    # Get replay
-                                    repvars, frames = get_variables_from_replay(bk2_file, skip_first_step=bk2_idx==0, inttype=retro.data.Integrations.CUSTOM_ONLY)
-                                    runvars.append(repvars)
+
+                                    # replay and save using retro legacy function
+                                    game = None
+                                    scenario = None
+                                    inttype = retro.data.Integrations.CUSTOM_ONLY
+                                    movie = retro.Movie(bk2_file)
+                                    skip_first_step = bk2_idx==0
+                                    if game == None:
+                                        game = movie.get_game()
+                                    emulator = retro.make(game, scenario=scenario, inttype=inttype, render_mode=False)
+                                    emulator.initial_state = movie.get_state()
+                                    emulator.reset()
+                                    if skip_first_step:
+                                        movie.step()
+
+                                    npy_file = bk2_file.replace(".bk2", ".npz")
+                                    video_file = bk2_file.replace(".bk2", ".mp4")
+                                    playback_movie(emulator, movie, npy_file=npy_file, video_file=video_file, lossless='mp4', info_file=True)
+                                    emulator.close()
+
+                                    repvars = format_repvars_dict(bk2_file, emulator)
+
                                     info_dict = create_info_dict(repvars)
 
                                     # write info_dict to json file
@@ -156,19 +202,10 @@ def main(args):
                                     with open(json_sidecar_fname, 'w') as f:
                                         json.dump(info_dict, f)
 
-                                    # TODO : confirm video and variables encoding
-                                    # write repvars dict as npz
-                                    npz_sidecar_fname = bk2_file.replace(".bk2", ".npz")
-                                    np.savez(npz_sidecar_fname, **repvars)
-                            
-                                    # write video file
-                                    buttons = ["A", "UP", "DOWN", "LEFT", "RIGHT", "B"]
-                                    actions = []
-                                    for butt in buttons:
-                                        actions.append(repvars[butt])
-                                    video_path = json_sidecar_fname.replace(".json", ".mp4")
-                                    make_movie(video_path, np.array(frames), np.array(actions).T)
-                                    
+                                    # write repvars dict as pkl
+                                    pkl_sidecar_fname = bk2_file.replace(".bk2", ".pkl")
+                                    with open(pkl_sidecar_fname, 'wb') as f:
+                                        pickle.dump(repvars, f)
                                     
 if __name__ == "__main__":
     args = parser.parse_args()
