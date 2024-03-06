@@ -22,7 +22,7 @@ parser.add_argument(
 parser.add_argument(
     "-s",
     "--stimuli",
-    default='./stimuli',
+    default=None,
     type=str,
     help="Data path to look for the stimuli files (rom, state files, data.json etc...).",
 )
@@ -153,8 +153,12 @@ def main(args):
         print("No data path specified. Searching files in this folder.")
     print(f'Generating annotations for the mario dataset in : {DATA_PATH}')
     # Import stimuli
-    stimuli_path = op.join(args.stimuli)
-    # stimuli_path = '/home/hyruuk/GitHub/neuromod/mario.stimuli/SuperMarioBros-Nes'
+    if args.stimuli is None:
+        print("No stimuli path specified. Searching files in this folder.")
+        stimuli_path = op.join(os.getcwd(), "stimuli")
+        print(stimuli_path)
+    else:
+        stimuli_path = op.join(args.stimuli)
     retro.data.Integrations.add_custom_path(stimuli_path)
     
     # Walk through all folders looking for .bk2 files
@@ -171,10 +175,10 @@ def main(args):
                         for bk2_idx, bk2_file in enumerate(bk2_files):
                             if bk2_file != "Missing file" and type(bk2_file) != float:
                                 print("Adding : " + bk2_file)
-                                #bk2_fname = op.join(DATA_PATH, bk2_file)
                                 if op.exists(bk2_file):
 
                                     # replay and save using retro legacy function
+                                    # This bloc is important to get the skip_first_step right before playback_movie
                                     game = None
                                     scenario = None
                                     inttype = retro.data.Integrations.CUSTOM_ONLY
