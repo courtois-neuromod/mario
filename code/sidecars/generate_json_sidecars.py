@@ -1,3 +1,5 @@
+### This script is used to generate json sidecar files and playback videos for the mario dataset.
+
 import argparse
 import os
 import os.path as op
@@ -137,7 +139,7 @@ def format_repvars_dict(bk2_file, emulator):
         for frame in actions:
             repvars[button].append(frame[idx_button])
 
-    repvars['filename'] = bk2_file
+    repvars["filename"] = bk2_file
     repvars["level"] = bk2_file.split("/")[-1].split("_")[-2]
     repvars["subject"] = bk2_file.split("/")[-1].split("_")[0]
     repvars["session"] = bk2_file.split("/")[-1].split("_")[1]
@@ -167,49 +169,47 @@ def main(args):
             for file in files:
                 if "events.tsv" in file and not "annotated" in file:
                     run_events_file = op.join(root, file)
-                    events_annotated_fname = run_events_file.replace("_events.", "_desc-annotated_events.")
-                    if not op.isfile(events_annotated_fname):
-                        print(f"Processing : {file}")
-                        events_dataframe = pd.read_table(run_events_file)
-                        bk2_files = events_dataframe['stim_file'].values.tolist()
-                        for bk2_idx, bk2_file in enumerate(bk2_files):
-                            if bk2_file != "Missing file" and type(bk2_file) != float:
-                                print("Adding : " + bk2_file)
-                                if op.exists(bk2_file):
+                    print(f"Processing : {file}")
+                    events_dataframe = pd.read_table(run_events_file)
+                    bk2_files = events_dataframe['stim_file'].values.tolist()
+                    for bk2_idx, bk2_file in enumerate(bk2_files):
+                        if bk2_file != "Missing file" and type(bk2_file) != float:
+                            print("Adding : " + bk2_file)
+                            if op.exists(bk2_file):
 
-                                    # replay and save using retro legacy function
-                                    # This bloc is important to get the skip_first_step right before playback_movie
-                                    game = None
-                                    scenario = None
-                                    inttype = retro.data.Integrations.CUSTOM_ONLY
-                                    movie = retro.Movie(bk2_file)
-                                    skip_first_step = bk2_idx==0
-                                    if game == None:
-                                        game = movie.get_game()
-                                    emulator = retro.make(game, scenario=scenario, inttype=inttype, render_mode=False)
-                                    emulator.initial_state = movie.get_state()
-                                    emulator.reset()
-                                    if skip_first_step:
-                                        movie.step()
+                                # replay and save using retro legacy function
+                                # This bloc is important to get the skip_first_step right before playback_movie
+                                game = None
+                                scenario = None
+                                inttype = retro.data.Integrations.CUSTOM_ONLY
+                                movie = retro.Movie(bk2_file)
+                                skip_first_step = bk2_idx==0
+                                if game == None:
+                                    game = movie.get_game()
+                                emulator = retro.make(game, scenario=scenario, inttype=inttype, render_mode=False)
+                                emulator.initial_state = movie.get_state()
+                                emulator.reset()
+                                if skip_first_step:
+                                    movie.step()
 
-                                    npy_file = bk2_file.replace(".bk2", ".npz")
-                                    video_file = bk2_file.replace(".bk2", ".mp4")
-                                    playback_movie(emulator, movie, npy_file=npy_file, video_file=video_file, lossless='mp4', info_file=True)
-                                    emulator.close()
+                                npy_file = bk2_file.replace(".bk2", ".npz")
+                                video_file = bk2_file.replace(".bk2", ".mp4")
+                                playback_movie(emulator, movie, npy_file=npy_file, video_file=video_file, lossless='mp4', info_file=True)
+                                emulator.close()
 
-                                    repvars = format_repvars_dict(bk2_file, emulator)
+                                repvars = format_repvars_dict(bk2_file, emulator)
 
-                                    info_dict = create_info_dict(repvars)
+                                info_dict = create_info_dict(repvars)
 
-                                    # write info_dict to json file
-                                    json_sidecar_fname = bk2_file.replace(".bk2", ".json")
-                                    with open(json_sidecar_fname, 'w') as f:
-                                        json.dump(info_dict, f)
+                                # write info_dict to json file
+                                json_sidecar_fname = bk2_file.replace(".bk2", ".json")
+                                with open(json_sidecar_fname, 'w') as f:
+                                    json.dump(info_dict, f)
 
-                                    # write repvars dict as pkl
-                                    pkl_sidecar_fname = bk2_file.replace(".bk2", ".pkl")
-                                    with open(pkl_sidecar_fname, 'wb') as f:
-                                        pickle.dump(repvars, f)
+                                # write repvars dict as pkl
+                                pkl_sidecar_fname = bk2_file.replace(".bk2", ".pkl")
+                                with open(pkl_sidecar_fname, 'wb') as f:
+                                    pickle.dump(repvars, f)
                                     
 if __name__ == "__main__":
     args = parser.parse_args()
