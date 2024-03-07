@@ -76,10 +76,10 @@ def create_info_dict(repvars):
     info_dict = {}
 
     # world
-    info_dict['world'] = repvars['level'].split('-')[1][1]
+    info_dict['world'] = repvars['level'][1]
 
     # level
-    info_dict['level'] = repvars['level'].split('-')[1][-1]
+    info_dict['level'] = repvars['level'][-1]
 
     # duration
     info_dict['duration'] = len(repvars['score']) / 60
@@ -162,7 +162,7 @@ def main(args):
     retro.data.Integrations.add_custom_path(stimuli_path)
     
     # Walk through all folders looking for .bk2 files
-    for root, folder, files in os.walk(DATA_PATH):
+    for root, folder, files in sorted(os.walk(DATA_PATH)):
         if not "sourcedata" in root:
             for file in files:
                 if "events.tsv" in file and not "annotated" in file:
