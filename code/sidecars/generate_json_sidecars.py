@@ -140,7 +140,7 @@ def format_repvars_dict(bk2_file, emulator):
             repvars[button].append(frame[idx_button])
 
     repvars["filename"] = bk2_file
-    repvars["level"] = bk2_file.split("/")[-1].split("_")[-2]
+    repvars["level"] = bk2_file.split("/")[-1].split("_")[-2].split('-')[1]
     repvars["subject"] = bk2_file.split("/")[-1].split("_")[0]
     repvars["session"] = bk2_file.split("/")[-1].split("_")[1]
     repvars["repetition"] = bk2_file.split("/")[-1].split("_")[-1].split(".")[0]
