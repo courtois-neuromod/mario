@@ -3,8 +3,6 @@
 import argparse
 import os
 import os.path as op
-from videogames_tools.replay.replay import get_variables_from_replay
-from videogames_tools.visualization.visualization import make_movie
 import retro
 import pandas as pd
 import json
