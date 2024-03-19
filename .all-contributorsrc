@@ -1,5 +1,22 @@
 {
   "files": [
     "README"
-  ]
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "julieaboyle1",
+      "name": "jboyle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39348727?v=4",
+      "profile": "https://github.com/julieaboyle1",
+      "contributions": [
+        "design",
+        "projectManagement"
+      ]
+    }
+  ],
+  "projectName": "mario",
+  "projectOwner": "courtois-neuromod"
 }
