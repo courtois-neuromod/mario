@@ -22,5 +22,17 @@ Courtois NeuroMod data are [freely shared with the scientific community](https:/
 
 ## Contributors
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hyruuk"><img src="https://avatars.githubusercontent.com/u/36450529?v=4?s=100" width="100px;" alt="Yann Harel"/><br /><sub><b>Yann Harel</b></sub></a><br /><a href="#design-hyruuk" title="Design">🎨</a> <a href="#data-hyruuk" title="Data">🔣</a> <a href="#userTesting-hyruuk" title="User Testing">📓</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
