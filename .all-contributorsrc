@@ -1,5 +1,21 @@
 {
   "files": [
     "README"
-  ]
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "maelleF",
+      "name": "maelleF",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29599311?v=4",
+      "profile": "https://github.com/maelleF",
+      "contributions": [
+        "data"
+      ]
+    }
+  ],
+  "projectName": "mario",
+  "projectOwner": "courtois-neuromod"
 }
