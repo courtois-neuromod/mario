@@ -7,6 +7,7 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+
       "login": "FrancoisPgm",
       "name": "François Paugam",
       "avatar_url": "https://avatars.githubusercontent.com/u/35327799?v=4",
@@ -44,6 +45,17 @@
       "contributions": [
         "data",
         "projectManagement"
+        ]
+    },
+    {
+      "login": "hyruuk",
+      "name": "Yann Harel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36450529?v=4",
+      "profile": "https://github.com/hyruuk",
+      "contributions": [
+        "design",
+        "data",
+        "userTesting"
       ]
     }
   ],
