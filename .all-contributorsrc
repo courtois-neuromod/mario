@@ -1,5 +1,22 @@
 {
   "files": [
     "README"
-  ]
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "FrancoisPgm",
+      "name": "François Paugam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35327799?v=4",
+      "profile": "https://github.com/FrancoisPgm",
+      "contributions": [
+        "data",
+        "userTesting"
+      ]
+    }
+  ],
+  "projectName": "mario",
+  "projectOwner": "courtois-neuromod"
 }
