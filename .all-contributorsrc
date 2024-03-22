@@ -56,6 +56,7 @@
         "data",
         "userTesting"
       ]
+
     },
     {
       "login": "julieaboyle1",
@@ -81,6 +82,15 @@
       "name": "Marie-Eve Picard",
       "avatar_url": "https://avatars.githubusercontent.com/u/77584086?v=4",
       "profile": "https://github.com/me-pic",
+            "contributions": [
+        "data"
+      ]
+    },
+    {
+      "login": "motahareh-pourrahimi",
+      "name": "Motahareh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81639625?v=4",
+      "profile": "https://github.com/motahareh-pourrahimi",
       "contributions": [
         "data"
       ]
