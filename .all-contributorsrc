@@ -7,7 +7,6 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
-
       "login": "FrancoisPgm",
       "name": "François Paugam",
       "avatar_url": "https://avatars.githubusercontent.com/u/35327799?v=4",
@@ -56,6 +55,16 @@
         "design",
         "data",
         "userTesting"
+      ]
+    },
+    {
+      "login": "julieaboyle1",
+      "name": "jboyle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39348727?v=4",
+      "profile": "https://github.com/julieaboyle1",
+      "contributions": [
+        "design",
+        "projectManagement"
       ]
     }
   ],
