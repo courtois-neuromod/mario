@@ -15,6 +15,15 @@
         "data",
         "userTesting"
       ]
+    },
+    {
+      "login": "RainyFields",
+      "name": "RainyFields",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44264329?v=4",
+      "profile": "https://github.com/RainyFields",
+      "contributions": [
+        "data"
+      ]
     }
   ],
   "projectName": "mario",
