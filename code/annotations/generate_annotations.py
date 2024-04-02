@@ -302,7 +302,7 @@ def main(args):
     retro.data.Integrations.add_custom_path(stimuli_path)
     
     # Walk through all folders looking for .bk2 files
-    for root, folder, files in os.walk(DATA_PATH):
+    for root, folder, files in sorted(os.walk(DATA_PATH)):
         if not "sourcedata" in root:
             for file in files:
                 if "events.tsv" in file and not "annotated" in file:
