@@ -312,7 +312,7 @@ def main(args):
                         print(f"Processing : {file}")
                         events_dataframe = pd.read_table(run_events_file, index_col=0)
                         events_dataframe = events_dataframe[events_dataframe['trial_type']=='gym-retro_game'] # select only repetition events
-                        events_dataframe = events_dataframe[['trial_type','onset', 'level', 'stim_file']] # select only relevant columns
+                        events_dataframe = events_dataframe[['trial_type','onset', 'level', 'stim_file']].reset_index() # select only relevant columns
 
                         bk2_files = events_dataframe['stim_file'].values.tolist()
                         runvars = []
