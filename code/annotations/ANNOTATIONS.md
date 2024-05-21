@@ -38,6 +38,6 @@ In addition to the action annotations, we also encoded events extracted from the
 - Powerup_collected : Mario collects a powerup
 
 ## Scenes annotations
-To guide behavioral analysis of SMB gameplay, we splitted the levels into "scenes", which correspond to segments of roughly one screen length, determined by the player position in the level. Each scene can be conceived as a "problem" posed to the player, composed of various design patterns. The scenes annotations in the annotated_events.tsv file correspond to the moment a player enters a scene, and lasts until the player exits the scene. Scene events are identified by the value "scene-{sceneID}" in the "trial_type" column. The scene ID is composed as followed : w{world}l{level}s{sceneNumber}. For example, w1l1s1 is the scene number 1 of World 1 Level 1.
-
-TODO : explain scene codes
+To guide behavioral analysis of SMB gameplay, we splitted the levels into "scenes", which correspond to segments of roughly one screen length, determined by the player position in the level. Each scene can be conceived as a "problem" posed to the player, composed of various design patterns. The scenes annotations in the annotated_events.tsv file correspond to the moment a player enters a scene, and lasts until the player exits the scene. Scene events are identified by the value "scene-{sceneID}" in the "trial_type" column. The scene ID is composed as followed : w{world}l{level}s{sceneNumber}. For example, w1l1s1 is the scene number 1 of World 1 Level 1.  
+The scenes can be clipped with the clip_extractor.py script. This script will generate a unique code identifier for each scene. This code is a 14 digit number and is structured as follows : '{str(session).zfill(3)}{str(run).zfill(2)}{str(bk2_idx).zfill(2)}{str(start_frame_idx).zfill(7)}'
+It can be used as an ordinal variable to determine the sequence in wich the clips were played.
