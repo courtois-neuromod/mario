@@ -13,6 +13,8 @@ The annotated_events.tsv files contain the classical BIDS events fields : trial_
 - frame_start : Frame ID of the event onset, in frames, relative to the first frame of the current repetition
 - frame_stop : Frame ID of the event offset, in frames, relative to the first frame of the current repetition
 
+## Repetition annotations
+These annotations are used to identify the onsets and durations of each repetition (corresponding to a single .bk2 file). Each repetition is constituted by a single attempt at solving a level. The repetition ends when the player loses all three lives or if the player completes the current level (in which case, the corresponding .json sidecar will indicate "cleared=True"). Each repetition can be either part of the discovery or the practice phases. During the discovery phase, the player cycles through each level of the game sequentially, and will keep repeating the same level for the whole run. The player will need to solve the level at least once before progressing to the practice phase. During the practice phase, the levels are displayed randomly and change for each repetition, even within the same run.
 
 ## Action annotations
 Action annotations exhaustively describe the player's inputs throughout the game. Their onset reflect the timing of the keypress, relative to the beginning of the run, and the duration corresponds to the time elapsed between the key press and the key release. 

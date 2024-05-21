@@ -412,7 +412,7 @@ def main(args):
     SCENES_FILE = args.scenesfile
     if SCENES_FILE is None:
         SCENES_FILE = op.join(DATA_PATH, "scenes.json")
-    SCENES_FILE = op.join('/home/hyruuk/GitHub/neuromod/videogames_curiosity', "clip_extractor","scenes_mastersheet.csv")
+    SCENES_FILE = op.join(DATA_PATH, 'code', 'scenes', "scenes_mastersheet.csv")
 
     
     scenes_info = pd.read_csv(SCENES_FILE)
@@ -453,6 +453,7 @@ def main(args):
                                     events_dataframe.loc[events_dataframe['stim_file']==bk2_file, 'frame_start'] = int(0)
                                     events_dataframe.loc[events_dataframe['stim_file']==bk2_file, 'frame_stop'] = int(len(repvars['score']))
                                     events_dataframe.loc[events_dataframe['stim_file']==bk2_file, 'duration'] = int(len(repvars['score']))/FS
+
                                     # rename index column to rep_index
                                     events_dataframe.rename(columns={'index':'rep_index'}, inplace=True)
 
@@ -460,6 +461,14 @@ def main(args):
                             else:
                                 print("Missing file, skipping")
                                 runvars.append({})
+                                
+                        # Add phase (discovery VS practice)
+                        if events_dataframe['level'].values[0] == events_dataframe['level'].values[1]:
+                            phase = 'discovery'
+                        else:
+                            phase = 'practice'
+                        events_dataframe['phase'] = phase
+
                         events_df = create_runevents(runvars, scenes_info_dict, events_dataframe, FS=FS)
                         events_df.to_csv(events_annotated_fname, sep='\t', index=False)
                         
