@@ -31,7 +31,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "-d",
     "--datapath",
-    default='/home/hyruuk/DATA/mario',
+    default='.',
     type=str,
     help="Data path to look for events.tsv and .bk2 files. Should be the root of the mario dataset.",
 )
@@ -223,7 +223,7 @@ def main(args):
     SCENES_FILE = args.scenesfile
     if SCENES_FILE is None:
         SCENES_FILE = op.join(DATA_PATH, "scenes.json")
-    SCENES_FILE = op.join('/home/hyruuk/GitHub/neuromod/videogames_curiosity', "clip_extractor","scenes_mastersheet.csv")
+    SCENES_FILE = op.join(DATA_PATH, "code", "scenes","scenes_mastersheet.csv")
 
     scenes_info = pd.read_csv(SCENES_FILE)
 
@@ -277,7 +277,7 @@ def main(args):
                     bk2_files = events_dataframe['stim_file'].values.tolist()
                     for bk2_idx, bk2_file in enumerate(bk2_files):
                         if bk2_file != "Missing file" and type(bk2_file) != float:
-                            print("Adding : " + bk2_file)
+                            print("Checking : " + bk2_file)
                             rep_order_string = f'{str(ses).zfill(3)}{str(run).zfill(2)}{str(bk2_idx).zfill(2)}'
                             curr_level = bk2_file.split("/")[-1].split("_")[-2].split('-')[1]
                             if curr_level == 'w1l1': ## remove/replace later
@@ -322,7 +322,7 @@ def main(args):
                                         selected_frames = frames_list[start_idx:end_idx]
                                         clip_code = f'{rep_order_string}{str(start_idx).zfill(7)}'
                                         assert len(clip_code) == 14, print(rep_order_string, start_idx)
-                                        clip_fname = op.join(CLIPS_FOLDER, f'{repvars['subject']}_{repvars['session']}_{repvars['level']}_{repvars['repetition']}_scene-{current_scene.split('s')[1]}_code-{clip_code}.gif')
+                                        clip_fname = op.join(CLIPS_FOLDER, f"{repvars['subject']}_{repvars['session']}_{repvars['level']}_{repvars['repetition']}_scene-{current_scene.split('s')[1]}_code-{clip_code}.gif")
                                         make_gif(selected_frames, clip_fname)
                                         subjects.append(sub)
                                         clip_codes.append(clip_code)
