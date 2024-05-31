@@ -14,7 +14,6 @@
   "EchoTrainLength": 104,
   "EffectiveEchoSpacing": 0.000560011,
   "FlipAngle": 52,
-  "HeudiconvVersion": "0.10.0",
   "ImagingFrequency": 123.259,
   "InPlanePhaseEncodingDirectionDICOM": "COL",
   "InstitutionName": "IUGM",
