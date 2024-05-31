@@ -1,5 +1,5 @@
 [submodule "stimuli"]
 	path = stimuli
 	url = git@github.com:courtois-neuromod/mario.stimuli.git
-	datalad-url = git@github.com:courtois-neuromod/mario.stimuli.git
+	datalad-url = https://github.com/courtois-neuromod/mario.stimuli.git
 	datalad-id = a872e181-72a7-401b-905d-8149f8918063
