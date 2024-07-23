@@ -51,6 +51,14 @@ parser.add_argument(
     help="Path to the scenes file, a JSON file that contains info about the start and end positions to clip.",
 )
 
+parser.add_argument(
+    "-ext",
+    "--clip_extension",
+    default="gif",
+    type=str,
+    help="Format in which the extracted clips should be save"
+)
+
 
 def replay_bk2(
     bk2_path, skip_first_step=True, game=None, scenario=None, inttype=retro.data.Integrations.CUSTOM_ONLY
@@ -322,7 +330,7 @@ def main(args):
                                         selected_frames = frames_list[start_idx:end_idx]
                                         clip_code = f'{rep_order_string}{str(start_idx).zfill(7)}'
                                         assert len(clip_code) == 14, print(rep_order_string, start_idx)
-                                        clip_fname = op.join(CLIPS_FOLDER, f"{repvars['subject']}_{repvars['session']}_{repvars['level']}_{repvars['repetition']}_scene-{current_scene.split('s')[1]}_code-{clip_code}.gif")
+                                        clip_fname = op.join(CLIPS_FOLDER, f"{repvars['subject']}_{repvars['session']}_{repvars['level']}_{repvars['repetition']}_scene-{current_scene.split('s')[1]}_code-{clip_code}.{args.clip_extension}")
                                         make_gif(selected_frames, clip_fname)
                                         subjects.append(sub)
                                         clip_codes.append(clip_code)
