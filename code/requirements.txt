@@ -2,3 +2,4 @@ pandas
 stable-retro
 numpy
 pickle
+sk-video

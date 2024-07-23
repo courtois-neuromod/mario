@@ -23,6 +23,7 @@ import pandas as pd
 import json
 import numpy as np
 import pickle
+import skvideo.io
 from retro.scripts.playback_movie import playback_movie
 from numpy import load
 from PIL import Image
@@ -223,6 +224,18 @@ def make_gif(selected_frames, movie_fname):
     
     frame_list[0].save(movie_fname, save_all=True, append_images=frame_list[1:], optimize=False, duration=16, loop=0)
 
+
+def make_mp4(selected_frames, movie_fname):
+    writer = skvideo.io.FFmpegWriter(
+        movie_fname, inputdict={"-r": "60"}, outputdict={"-r": "60"}
+    )
+    for frame in selected_frames:
+        im = Image.new("RGB", (frame.shape[1], frame.shape[0]), color="white")
+        im.paste(Image.fromarray(frame), (0, 0))
+        writer.writeFrame(np.array(im))
+    writer.close()
+
+
 def main(args):
     # Get datapath
     DATA_PATH = os.path.abspath(args.datapath)
@@ -331,7 +344,10 @@ def main(args):
                                         clip_code = f'{rep_order_string}{str(start_idx).zfill(7)}'
                                         assert len(clip_code) == 14, print(rep_order_string, start_idx)
                                         clip_fname = op.join(CLIPS_FOLDER, f"{repvars['subject']}_{repvars['session']}_{repvars['level']}_{repvars['repetition']}_scene-{current_scene.split('s')[1]}_code-{clip_code}.{args.clip_extension}")
-                                        make_gif(selected_frames, clip_fname)
+                                        if args.clip_extension == 'gif':
+                                            make_gif(selected_frames, clip_fname)
+                                        elif args.clip_extension in ['mp3', 'mp4']:
+                                            make_mp4(selected_frames, clip_fname)
                                         subjects.append(sub)
                                         clip_codes.append(clip_code)
                                         clip_bounds.append(pattern)
