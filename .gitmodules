@@ -3,3 +3,6 @@
 	url = git@github.com:courtois-neuromod/mario.stimuli.git
 	datalad-url = git@github.com:courtois-neuromod/mario.stimuli.git
 	datalad-id = a872e181-72a7-401b-905d-8149f8918063
+[submodule "code/mario_scenes"]
+	path = code/mario_scenes
+	url = git@github.com:courtois-neuromod/mario_scenes
