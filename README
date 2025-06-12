@@ -1,18 +1,19 @@
 <!-- vim: syntax=Markdown -->
-# Courtois-NeuroMod: [xxxx subdataset](https://github.com/courtois-neuromod/xxxxx)
+# Courtois-NeuroMod: [mario subdataset](https://github.com/courtois-neuromod/mario)
 
 The [Courtois project on Neural Modelling (Courtois NeuroMod)](https://www.cneuromod.ca/) aims at training artificial neural networks using extensive experimental data on individual human brain activity and behaviour.
 
-Participants *performed task xxx while functional data being acquired in the MRI scanner* . A extensive description can be found [here](https://docs.cneuromod.ca/en/latest/DATASETS.html#xxxx).
+Participants *played videogame Super Mario Bros I while functional data being acquired in the MRI scanner* . A extensive description can be found [here](https://docs.cneuromod.ca/en/latest/DATASETS.html#mario).
 
 This subdataset is organized following the [brain imaging data structure (BIDS)](https://bids.neuroimaging.io/) (including extensions in development) and contains:
 - [x] [raw neuroimaging data](https://docs.cneuromod.ca/en/latest/MRI.html#functional-sequences)
-- [ ] behavioral variables in event files
-- [ ] physiological data
-  - [ ] ECG
-  - [ ] pulse (photoplethysmography)
-  - [ ] respiration
-  - [ ] skin conductance (electro-dermal activity)
+- [x] behavioral variables in event files
+- [x] gameplay files as bk2s files
+- [x] physiological data
+  - [x] ECG
+  - [x] pulse (photoplethysmography)
+  - [x] respiration
+  - [x] skin conductance (electro-dermal activity)
 - [ ] eyetracking gaze and pupillometry
 
 *(unchecked are collected data which have not yet been integrated in the dataset)*
@@ -22,5 +23,28 @@ Courtois NeuroMod data are [freely shared with the scientific community](https:/
 
 ## Contributors
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/FrancoisPgm"><img src="https://avatars.githubusercontent.com/u/35327799?v=4?s=100" width="100px;" alt="François Paugam"/><br /><sub><b>François Paugam</b></sub></a><br /><a href="#data-FrancoisPgm" title="Data">🔣</a> <a href="#userTesting-FrancoisPgm" title="User Testing">📓</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RainyFields"><img src="https://avatars.githubusercontent.com/u/44264329?v=4?s=100" width="100px;" alt="RainyFields"/><br /><sub><b>RainyFields</b></sub></a><br /><a href="#data-RainyFields" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/bpinsard"><img src="https://avatars.githubusercontent.com/u/1155388?v=4?s=100" width="100px;" alt="Basile"/><br /><sub><b>Basile</b></sub></a><br /><a href="#design-bpinsard" title="Design">🎨</a> <a href="#projectManagement-bpinsard" title="Project Management">📆</a> <a href="#data-bpinsard" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/emilie-dessureault"><img src="https://avatars.githubusercontent.com/u/61021023?v=4?s=100" width="100px;" alt="emilie-dessureault"/><br /><sub><b>emilie-dessureault</b></sub></a><br /><a href="#data-emilie-dessureault" title="Data">🔣</a> <a href="#projectManagement-emilie-dessureault" title="Project Management">📆</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hyruuk"><img src="https://avatars.githubusercontent.com/u/36450529?v=4?s=100" width="100px;" alt="Yann Harel"/><br /><sub><b>Yann Harel</b></sub></a><br /><a href="#design-hyruuk" title="Design">🎨</a> <a href="#data-hyruuk" title="Data">🔣</a> <a href="#userTesting-hyruuk" title="User Testing">📓</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/julieaboyle1"><img src="https://avatars.githubusercontent.com/u/39348727?v=4?s=100" width="100px;" alt="jboyle"/><br /><sub><b>jboyle</b></sub></a><br /><a href="#design-julieaboyle1" title="Design">🎨</a> <a href="#projectManagement-julieaboyle1" title="Project Management">📆</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maelleF"><img src="https://avatars.githubusercontent.com/u/29599311?v=4?s=100" width="100px;" alt="maelleF"/><br /><sub><b>maelleF</b></sub></a><br /><a href="#data-maelleF" title="Data">🔣</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/me-pic"><img src="https://avatars.githubusercontent.com/u/77584086?v=4?s=100" width="100px;" alt="Marie-Eve Picard"/><br /><sub><b>Marie-Eve Picard</b></sub></a><br /><a href="#data-me-pic" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/motahareh-pourrahimi"><img src="https://avatars.githubusercontent.com/u/81639625?v=4?s=100" width="100px;" alt="Motahareh"/><br /><sub><b>Motahareh</b></sub></a><br /><a href="#data-motahareh-pourrahimi" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://simexp-lab.org"><img src="https://avatars.githubusercontent.com/u/1670887?v=4?s=100" width="100px;" alt="Pierre Bellec"/><br /><sub><b>Pierre Bellec</b></sub></a><br /><a href="#design-pbellec" title="Design">🎨</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
