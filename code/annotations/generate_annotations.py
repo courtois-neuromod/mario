@@ -24,7 +24,6 @@ Note: Requires replay files (_variables.json) in gamelogs/ folders.
 import argparse
 import os
 import os.path as op
-import stable_retro
 import pandas as pd
 import numpy as np
 import json
@@ -445,9 +444,6 @@ def main(args):
     if DATA_PATH == ".":
         print("No data path specified. Searching files in this folder.")
     print(f"Generating annotations for the mario dataset in : {DATA_PATH}")
-    # Import stimuli
-    stimuli_path = op.join(DATA_PATH, "stimuli")
-    stable_retro.data.Integrations.add_custom_path(stimuli_path)
 
     OUTPUT_PATH = args.output_path
 

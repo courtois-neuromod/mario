@@ -7,7 +7,6 @@ This script generates BIDS-compatible annotated event files (`*_desc-annotated_e
 - Python 3.8 or higher
 - The Mario dataset with `.bk2` replay files
 - **Replays must be processed first** using `code/replays/create_replays.py` to generate `*_variables.json` files
-- ROM files in the `stimuli/` directory
 
 ## Installation
 
@@ -36,7 +35,6 @@ pip install -r code/annotations/requirements.txt
 This will install:
 - numpy
 - pandas
-- stable-retro
 
 ## Usage
 
@@ -142,9 +140,6 @@ python code/annotations/generate_annotations.py --datapath .
 
 ### "No bk2 files available for this run"
 - Normal if a run has no valid .bk2 files (all marked as "Missing file")
-
-### ROM/stimuli errors
-- Verify that `stimuli/SuperMarioBros-Nes/` contains the ROM files
 
 ### Already annotated files
 - The script skips files that already have annotated versions
