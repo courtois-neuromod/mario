@@ -257,7 +257,7 @@ def _build_output_paths(output_folder, bk2_file, subject, session):
 
     return {
         "mp4": op.join(gamelogs_folder, f"{entities}_recording.mp4"),
-        "json": op.join(gamelogs_folder, f"{entities}.json"),
+        "json": op.join(gamelogs_folder, f"{entities}_summary.json"),
         "variables": op.join(gamelogs_folder, f"{entities}_variables.json"),
         "lowlevel": op.join(gamelogs_folder, f"{entities}_lowlevel.npy"),
         "entities": entities,
