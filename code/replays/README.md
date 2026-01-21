@@ -47,7 +47,7 @@ This will install all required packages including:
 From the root directory of the mario repository:
 
 ```bash
-python code/replays/create_replays.py --datapath . --output .
+python code/replays/generate_replays.py --datapath . --output .
 ```
 
 This will:
@@ -83,13 +83,13 @@ If you want to skip certain outputs (e.g., to save time/space), use the `--skip_
 
 ```bash
 # Skip video generation (fastest, saves most space)
-python code/replays/create_replays.py --datapath . --output . --skip_videos
+python code/replays/generate_replays.py --datapath . --output . --skip_videos
 
 # Skip multiple outputs
-python code/replays/create_replays.py --datapath . --output . --skip_videos --skip_variables
+python code/replays/generate_replays.py --datapath . --output . --skip_videos --skip_variables
 
 # Only generate JSON metadata
-python code/replays/create_replays.py --datapath . --output . --skip_videos --skip_variables --skip_lowlevel
+python code/replays/generate_replays.py --datapath . --output . --skip_videos --skip_variables --skip_lowlevel
 ```
 
 Available skip flags:
@@ -119,28 +119,28 @@ The script automatically detects:
 
 ```bash
 # Use parallel processing with multiple jobs (default is all cores)
-python code/replays/create_replays.py --datapath . --output . --n_jobs 4
+python code/replays/generate_replays.py --datapath . --output . --n_jobs 4
 
 # Use all available CPU cores (default)
-python code/replays/create_replays.py --datapath . --output . --n_jobs -1
+python code/replays/generate_replays.py --datapath . --output . --n_jobs -1
 
 # Use single-threaded processing
-python code/replays/create_replays.py --datapath . --output . --n_jobs 1
+python code/replays/generate_replays.py --datapath . --output . --n_jobs 1
 
 # Verbose output
-python code/replays/create_replays.py --datapath . --output . --verbose
+python code/replays/generate_replays.py --datapath . --output . --verbose
 
 # Custom stimuli path (if ROMs are in a different location)
-python code/replays/create_replays.py --datapath . --output . --stimuli /path/to/stimuli
+python code/replays/generate_replays.py --datapath . --output . --stimuli /path/to/stimuli
 
 # Filter by subject
-python code/replays/create_replays.py --datapath . --output . --subjects sub-01 sub-02
+python code/replays/generate_replays.py --datapath . --output . --subjects sub-01 sub-02
 
 # Filter by session
-python code/replays/create_replays.py --datapath . --output . --sessions ses-001 ses-002
+python code/replays/generate_replays.py --datapath . --output . --sessions ses-001 ses-002
 
 # Filter by both
-python code/replays/create_replays.py --datapath . --output . --subjects sub-01 --sessions ses-001
+python code/replays/generate_replays.py --datapath . --output . --subjects sub-01 --sessions ses-001
 ```
 
 ## How It Works
@@ -195,7 +195,7 @@ mario/
 │   └── SuperMarioBros-Nes/  # or SuperMarioBrosSimple-Nes
 ├── code/
 │   └── replays/
-│       ├── create_replays.py
+│       ├── generate_replays.py
 │       ├── requirements.txt
 │       └── README.md
 └── env/  # Created by you
