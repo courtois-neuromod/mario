@@ -1,6 +1,5 @@
 numpy
 pandas
-retro
 stable-retro
 joblib
 tqdm
