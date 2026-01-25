@@ -150,7 +150,15 @@ def generate_key_events(repvars, key, FS=60):
     onset = presses
     level = [repvars["level"] for x in onset]
     duration = [round(releases[i] - presses[i], 3) for i in range(len(presses))]
-    trial_type = ["{}".format(key) for i in range(len(presses))]
+    duration = [round(releases[i] - presses[i], 3) for i in range(len(presses))]
+    
+    event_name = key
+    if key == "A":
+        event_name = "JUMP"
+    elif key == "B":
+        event_name = "RUN/THROW"
+        
+    trial_type = ["{}".format(event_name) for i in range(len(presses))]
     events_df = pd.DataFrame(
         data={
             "onset": onset,
@@ -271,9 +279,32 @@ def generate_hits_taken_events(repvars, FS=60):
     diff_lives = list(np.diff(repvars["lives"]))
     for idx_val, val in enumerate(diff_lives):
         if val < 0:
+            # Check for fall (gap death) based on vertical velocity
+            is_fall = False
+            if "player_y_pos" in repvars:
+                # Calculate velocity around the event
+                # Look at 10 frames before death
+                check_start = max(0, idx_val - 10)
+                check_end = idx_val
+                
+                if check_end > check_start:
+                    y_pos_segment = repvars["player_y_pos"][check_start:check_end+1]
+                    # Calculate frame-to-frame velocity
+                    velocities = [y_pos_segment[i+1] - y_pos_segment[i] for i in range(len(y_pos_segment)-1)]
+                    
+                    # Typical fall velocity in SMB1 is around 4-5 pixels per frame downward (positive Y)
+                    # We look for consistently high positive velocity or a max velocity exceeding threshold
+                    if velocities and max(velocities) >= 4:
+                        is_fall = True
+
             onset.append(idx_val / FS)
             duration.append(0)
-            trial_type.append("Hit/life_lost")
+            
+            if is_fall:
+                trial_type.append("Hit/fall")
+            else:
+                trial_type.append("Hit/life_lost")
+                
             level.append(repvars["level"])
             frame_start.append(idx_val)
             frame_stop.append(idx_val)
@@ -539,10 +570,8 @@ def main(args):
                                         int(len(repvars["score"])) / FS
                                     )
 
-                                    # rename index column to rep_index
-                                    events_dataframe.rename(
-                                        columns={"index": "rep_index"}, inplace=True
-                                    )
+                                    # rename index column to rep_index and ensure 1-based sequential
+                                    events_dataframe["rep_index"] = range(1, len(events_dataframe) + 1)
 
                                     runvars.append(repvars)
                                 else:

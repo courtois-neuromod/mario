@@ -55,15 +55,42 @@ def _calculate_distance_traveled(repetition_variables):
     return end_x - start_x
 
 
-def _check_level_cleared(repetition_variables):
-    """Determine if level was successfully cleared."""
-    if repetition_variables["player_y_screen"][-1] > 1:
-        return False
-    if repetition_variables["lives"][-1] == -1:
-        return False
-    if repetition_variables["player_state"][-1] in [6, 11]:
-        return False
-    return True
+def _determine_outcome(repetition_variables):
+    """
+    Determine how the replay ended: 'cleared' or 'failed/*'.
+    
+    Outcome values (consistent with mario3):
+    - cleared: Level completed successfully
+    - failed/timeout: Timer reached 0 (lives decreased and timer = 0)
+    - failed/fall: Death by falling (player_y_screen > 1 at end, or lives = -1)
+    - failed/killed: Death by enemy (player_state 6 or 11 at end)
+    - unknown: Could not determine outcome
+    """
+    try:
+        lives_start = repetition_variables["lives"][0]
+        lives_end = repetition_variables["lives"][-1]
+        
+        # Check if lives decreased (death occurred)
+        if lives_end < lives_start:
+            # Check for timeout first (timer at 0)
+            timer = repetition_variables.get("time", [])
+            if timer and timer[-1] == 0:
+                return "failed/timeout"
+        
+        # Check for fall death (off screen or game over)
+        if repetition_variables["player_y_screen"][-1] > 1:
+            return "failed/fall"
+        if repetition_variables["lives"][-1] == -1:
+            return "failed/fall"
+        
+        # Check for killed state
+        if repetition_variables["player_state"][-1] in [6, 11]:
+            return "failed/killed"
+        
+        # Otherwise cleared
+        return "cleared"
+    except (KeyError, IndexError):
+        return "unknown"
 
 
 def _count_enemy_kills_for_slot(repetition_variables, slot_idx):
@@ -86,15 +113,15 @@ def count_kills(repetition_variables):
     return sum(_count_enemy_kills_for_slot(repetition_variables, i) for i in range(6))
 
 
-def count_bricks_destroyed(repetition_variables):
-    """Count bricks destroyed by jumping."""
+def count_bricks_smashed(repetition_variables):
+    """Count bricks smashed by jumping."""
     score_increments = list(np.diff(repetition_variables["score"]))
-    bricks_destroyed = 0
+    bricks_smashed = 0
 
     for idx, inc in enumerate(score_increments):
         if inc == 5 and repetition_variables["jump_airborne"][idx] == 1:
-            bricks_destroyed += 1
-    return bricks_destroyed
+            bricks_smashed += 1
+    return bricks_smashed
 
 
 def _count_powerstate_hits(repetition_variables):
@@ -146,7 +173,7 @@ def create_sidecar_dict(repetition_variables):
         "World": world,
         "Level": level,
         "Duration": duration,
-        "Cleared": _check_level_cleared(repetition_variables),
+        "Outcome": _determine_outcome(repetition_variables),
         "ScoreGained": repetition_variables["score"][-1] - repetition_variables["score"][0],
         "X_Traveled": distance,
         "Average_speed": distance / duration,
@@ -154,7 +181,7 @@ def create_sidecar_dict(repetition_variables):
         "Hits_taken": count_hits_taken(repetition_variables),
         "Enemies_killed": count_kills(repetition_variables),
         "Powerups_collected": count_powerups_collected(repetition_variables),
-        "Bricks_destroyed": count_bricks_destroyed(repetition_variables),
+        "Bricks_smashed": count_bricks_smashed(repetition_variables),
         "CoinsGained": repetition_variables["coins"][-1] - repetition_variables["coins"][0],
     }
 
