@@ -468,19 +468,24 @@ def _collect_bk2_info_from_events(run_events_file):
         return []
 
     phase = _determine_phase(events_df)
-    bk2_files = events_df["stim_file"].values.tolist()
+    
+    # Filter to only rows with valid .bk2 stim_files BEFORE enumerating
+    # This ensures idx_in_run correctly counts only actual game repetitions
+    valid_bk2_mask = events_df["stim_file"].apply(
+        lambda x: isinstance(x, str) and ".bk2" in x
+    )
+    bk2_files = events_df.loc[valid_bk2_mask, "stim_file"].values.tolist()
 
     bk2_list = []
     for idx_in_run, bk2_file in enumerate(bk2_files):
-        if isinstance(bk2_file, str) and ".bk2" in bk2_file:
-            bk2_list.append(
-                {
-                    "bk2_file": bk2_file,
-                    "run": run,
-                    "idx_in_run": idx_in_run,
-                    "phase": phase,
-                }
-            )
+        bk2_list.append(
+            {
+                "bk2_file": bk2_file,
+                "run": run,
+                "idx_in_run": idx_in_run,
+                "phase": phase,
+            }
+        )
     return bk2_list
 
 
