@@ -61,7 +61,7 @@ Instantaneous events (duration=0):
 
 #### Hit Events
 Instantaneous events (duration=0):
-- `Hit/powerup_lost` - Lost powerup state
+- `Hit/powerup_lost` - Lost powerup state (detected via any decrement in `powerstate`)
 - `Hit/life_lost` - Death by enemy
 - `Hit/fall` - Death by falling in pit
 
@@ -70,6 +70,10 @@ Instantaneous events (duration=0):
 - `Coin_collected` - Coin counter increases
 - `Powerup_collected` - Super mushroom or fire flower collected
 - `Brick_smashed` - Brick destroyed (detected via score increment of 5 while airborne)
+
+#### Level Completion Events
+Instantaneous events (duration=0):
+- `Level_complete` - Flag grabbed (detected via jump_airborne == 3)
 
 ### Phase Information
 

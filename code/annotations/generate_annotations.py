@@ -92,6 +92,13 @@ def create_runevents(runvars, run_id, events_dataframe, FS=60):
             temp_df["rep_index"] = rep_index
             all_df.append(temp_df)
 
+            # Level complete
+            temp_df = generate_level_complete_events(repvars, FS=FS)
+            if not temp_df.empty:
+                temp_df["onset"] = temp_df["onset"] + repvars["rep_onset"]
+                temp_df["rep_index"] = rep_index
+                all_df.append(temp_df)
+
     try:
         events_df = pd.concat(all_df).sort_values(by="onset").reset_index(drop=True)
         
@@ -264,10 +271,10 @@ def generate_hits_taken_events(repvars, FS=60):
     frame_start = []
     frame_stop = []
 
-    # Powerup lost
+    # Powerup lost (any decrement in powerstate)
     diff_state = list(np.diff(repvars["powerstate"]))
     for idx_val, val in enumerate(diff_state):
-        if val < -10000:
+        if val < 0:
             onset.append(idx_val / FS)
             duration.append(0)
             trial_type.append("Hit/powerup_lost")
@@ -453,6 +460,69 @@ def generate_powerup_events(repvars, FS=60):
                 level.append(repvars["level"])
                 frame_start.append(idx)
                 frame_stop.append(idx)
+
+    events_df = pd.DataFrame(
+        data={
+            "onset": onset,
+            "duration": duration,
+            "trial_type": trial_type,
+            "level": level,
+            "frame_start": frame_start,
+            "frame_stop": frame_stop,
+        }
+    )
+    return events_df
+
+
+def generate_level_complete_events(repvars, FS=60):
+    """Generate events for level completion.
+
+    Super Mario Bros (NES) level completion is detected when jump_airborne == 3,
+    which indicates Mario is grabbing the flag pole.
+
+    Parameters
+    ----------
+    repvars : dict
+        Dictionary containing all the variables of a single repetition
+    FS : int
+        The sampling rate of the .bk2 file (default: 60)
+
+    Returns
+    -------
+    events_df : pandas.DataFrame
+        Events DataFrame in BIDS-compatible format
+    """
+    onset = []
+    duration = []
+    trial_type = []
+    level = []
+    frame_start = []
+    frame_stop = []
+
+    if "jump_airborne" not in repvars:
+        return pd.DataFrame(
+            data={
+                "onset": onset,
+                "duration": duration,
+                "trial_type": trial_type,
+                "level": level,
+                "frame_start": frame_start,
+                "frame_stop": frame_stop,
+            }
+        )
+
+    jump_airborne = repvars["jump_airborne"]
+
+    # Detect transition to jump_airborne == 3 (flag pole grab)
+    for idx in range(1, len(jump_airborne)):
+        if jump_airborne[idx] == 3 and jump_airborne[idx - 1] != 3:
+            onset.append(idx / FS)
+            duration.append(0)
+            trial_type.append("Level_complete")
+            level.append(repvars["level"])
+            frame_start.append(idx)
+            frame_stop.append(idx)
+            break  # Only one level complete event per repetition
 
     events_df = pd.DataFrame(
         data={

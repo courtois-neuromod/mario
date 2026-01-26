@@ -60,13 +60,22 @@ def _determine_outcome(repetition_variables):
     Determine how the replay ended: 'cleared' or 'failed/*'.
     
     Outcome values (consistent with mario3):
-    - cleared: Level completed successfully
+    - cleared: Level completed successfully (flag grabbed = jump_airborne == 3)
     - failed/timeout: Timer reached 0 (lives decreased and timer = 0)
     - failed/fall: Death by falling (player_y_screen > 1 at end, or lives = -1)
     - failed/killed: Death by enemy (player_state 6 or 11 at end)
     - unknown: Could not determine outcome
     """
     try:
+        # Check for flag pole grab FIRST (jump_airborne == 3 indicates flag grab)
+        # This is the same logic as Level_complete detection
+        if "jump_airborne" in repetition_variables:
+            jump_airborne = repetition_variables["jump_airborne"]
+            for idx in range(1, len(jump_airborne)):
+                if jump_airborne[idx] == 3 and jump_airborne[idx - 1] != 3:
+                    # Flag was grabbed - level was cleared
+                    return "cleared"
+        
         lives_start = repetition_variables["lives"][0]
         lives_end = repetition_variables["lives"][-1]
         
@@ -87,8 +96,8 @@ def _determine_outcome(repetition_variables):
         if repetition_variables["player_state"][-1] in [6, 11]:
             return "failed/killed"
         
-        # Otherwise cleared
-        return "cleared"
+        # Default to unknown if no clear outcome detected
+        return "unknown"
     except (KeyError, IndexError):
         return "unknown"
 
