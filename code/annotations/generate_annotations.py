@@ -248,9 +248,11 @@ def generate_kill_events(repvars, FS=60):
 def generate_hits_taken_events(repvars, FS=60):
     """Generate events for when Mario takes damage or loses a life.
 
-    Two types of hits:
-    - Powerup lost: powerstate decreases by more than 10000
-    - Life lost: lives counter decreases
+    Hit types based on player_state:
+    - Hit/powerup_lost: player_state reaches 10 (damage taken, powerup lost)
+    - Hit/fall: lives decrement without player_state=11 in previous 300 frames
+    - Hit/timeout: lives decrement with player_state=11 in previous 300 frames and timer=0
+    - Hit/life_lost: lives decrement with player_state=11 in previous 300 frames and timer>0
 
     Parameters
     ----------
@@ -271,50 +273,65 @@ def generate_hits_taken_events(repvars, FS=60):
     frame_start = []
     frame_stop = []
 
-    # Powerup lost (any decrement in powerstate)
-    diff_state = list(np.diff(repvars["powerstate"]))
-    for idx_val, val in enumerate(diff_state):
-        if val < 0:
-            onset.append(idx_val / FS)
+    LOOKBACK_FRAMES = 300  # 5 seconds at 60 FPS
+
+    # Hit/powerup_lost: when player_state reaches 10
+    player_state = repvars["player_state"]
+    for idx in range(1, len(player_state)):
+        if player_state[idx] == 10 and player_state[idx - 1] != 10:
+            onset.append(idx / FS)
             duration.append(0)
             trial_type.append("Hit/powerup_lost")
             level.append(repvars["level"])
-            frame_start.append(idx_val)
-            frame_stop.append(idx_val)
+            frame_start.append(idx)
+            frame_stop.append(idx)
 
-    # Lives lost
+    # Lives lost events
     diff_lives = list(np.diff(repvars["lives"]))
     for idx_val, val in enumerate(diff_lives):
         if val < 0:
-            # Check for fall (gap death) based on vertical velocity
-            is_fall = False
-            if "player_y_pos" in repvars:
-                # Calculate velocity around the event
-                # Look at 10 frames before death
-                check_start = max(0, idx_val - 10)
-                check_end = idx_val
-                
-                if check_end > check_start:
-                    y_pos_segment = repvars["player_y_pos"][check_start:check_end+1]
-                    # Calculate frame-to-frame velocity
-                    velocities = [y_pos_segment[i+1] - y_pos_segment[i] for i in range(len(y_pos_segment)-1)]
-                    
-                    # Typical fall velocity in SMB1 is around 4-5 pixels per frame downward (positive Y)
-                    # We look for consistently high positive velocity or a max velocity exceeding threshold
-                    if velocities and max(velocities) >= 4:
-                        is_fall = True
+            # Look back up to 300 frames to find player_state == 11
+            check_start = max(0, idx_val - LOOKBACK_FRAMES)
+            check_end = idx_val + 1  # include the current frame
 
-            onset.append(idx_val / FS)
-            duration.append(0)
-            
-            if is_fall:
-                trial_type.append("Hit/fall")
-            else:
-                trial_type.append("Hit/life_lost")
+            # Find if player_state was 11 in the lookback window
+            player_state_11_frame = None
+            for frame_idx in range(check_start, check_end):
+                if player_state[frame_idx] == 11:
+                    player_state_11_frame = frame_idx
+                    break  # Get the first occurrence
+
+            if player_state_11_frame is not None:
+                # player_state was 11 in the last 300 frames
+                # Check timer at that frame
+                timer_val = repvars.get("time", [1])[player_state_11_frame] if "time" in repvars else 1
                 
-            level.append(repvars["level"])
-            frame_start.append(idx_val)
-            frame_stop.append(idx_val)
+                if timer_val == 0:
+                    # Hit/timeout - timer ran out
+                    onset.append(player_state_11_frame / FS)
+                    duration.append(0)
+                    trial_type.append("Hit/timeout")
+                    level.append(repvars["level"])
+                    frame_start.append(player_state_11_frame)
+                    frame_stop.append(player_state_11_frame)
+                else:
+                    # Hit/life_lost - killed by enemy or other
+                    onset.append(player_state_11_frame / FS)
+                    duration.append(0)
+                    trial_type.append("Hit/life_lost")
+                    level.append(repvars["level"])
+                    frame_start.append(player_state_11_frame)
+                    frame_stop.append(player_state_11_frame)
+            else:
+                # player_state was NOT 11 in the last 300 frames
+                # This is a fall - onset is ~270 frames before the lives decrement
+                fall_onset_frame = max(0, idx_val - 270)
+                onset.append(fall_onset_frame / FS)
+                duration.append(0)
+                trial_type.append("Hit/fall")
+                level.append(repvars["level"])
+                frame_start.append(fall_onset_frame)
+                frame_stop.append(fall_onset_frame)
 
     events_df = pd.DataFrame(
         data={

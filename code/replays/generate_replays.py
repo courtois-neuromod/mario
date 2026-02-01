@@ -59,13 +59,15 @@ def _determine_outcome(repetition_variables):
     """
     Determine how the replay ended: 'cleared' or 'failed/*'.
     
-    Outcome values (consistent with mario3):
+    Outcome values (consistent with generate_annotations.py):
     - cleared: Level completed successfully (flag grabbed = jump_airborne == 3)
-    - failed/timeout: Timer reached 0 (lives decreased and timer = 0)
-    - failed/fall: Death by falling (player_y_screen > 1 at end, or lives = -1)
-    - failed/killed: Death by enemy (player_state 6 or 11 at end)
+    - failed/timeout: player_state=11 found in last 300 frames before final death with timer=0
+    - failed/fall: Final death without player_state=11 in previous 300 frames
+    - failed/killed: player_state=11 found in last 300 frames before final death with timer>0
     - unknown: Could not determine outcome
     """
+    LOOKBACK_FRAMES = 300  # 5 seconds at 60 FPS
+    
     try:
         # Check for flag pole grab FIRST (jump_airborne == 3 indicates flag grab)
         # This is the same logic as Level_complete detection
@@ -81,20 +83,43 @@ def _determine_outcome(repetition_variables):
         
         # Check if lives decreased (death occurred)
         if lives_end < lives_start:
-            # Check for timeout first (timer at 0)
-            timer = repetition_variables.get("time", [])
-            if timer and timer[-1] == 0:
-                return "failed/timeout"
+            # Find the LAST frame where lives decreased (final death)
+            diff_lives = list(np.diff(repetition_variables["lives"]))
+            last_death_frame = None
+            for idx_val, val in enumerate(diff_lives):
+                if val < 0:
+                    last_death_frame = idx_val  # Keep updating to get the last one
+            
+            if last_death_frame is not None:
+                # Look back up to 300 frames to find player_state == 11
+                player_state = repetition_variables["player_state"]
+                check_start = max(0, last_death_frame - LOOKBACK_FRAMES)
+                check_end = last_death_frame + 1
+                
+                # Find if player_state was 11 in the lookback window
+                player_state_11_frame = None
+                for frame_idx in range(check_start, check_end):
+                    if player_state[frame_idx] == 11:
+                        player_state_11_frame = frame_idx
+                        break
+                
+                if player_state_11_frame is not None:
+                    # Check timer at that frame
+                    timer_val = repetition_variables.get("time", [1])[player_state_11_frame] if "time" in repetition_variables else 1
+                    
+                    if timer_val == 0:
+                        return "failed/timeout"
+                    else:
+                        return "failed/killed"
+                else:
+                    # No player_state=11 found - this is a fall
+                    return "failed/fall"
         
-        # Check for fall death (off screen or game over)
+        # Check for fall death using end state (fallback)
         if repetition_variables["player_y_screen"][-1] > 1:
             return "failed/fall"
         if repetition_variables["lives"][-1] == -1:
             return "failed/fall"
-        
-        # Check for killed state
-        if repetition_variables["player_state"][-1] in [6, 11]:
-            return "failed/killed"
         
         # Default to unknown if no clear outcome detected
         return "unknown"
