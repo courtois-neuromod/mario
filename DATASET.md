@@ -14,6 +14,7 @@ The dataset is composed of several repositories:
 
 Additionally, several repositories extend the present dataset by providing tools and analyses that you can use to leverage your own:
 
+- [`mario.tutorials`](https://github.com/courtois-neuromod/mario.tutorials): Tutorials for using the mario dataset to perform GLM analysis and brain encoding experiments
 - [`mario.scenes`](https://github.com/courtois-neuromod/mario.scenes): Level-design analysis of SMB used to segment gameplay into analyzable units
 - [`mario.fmri_analysis`](https://github.com/courtois-neuromod/mario.fmri_analysis): GLM-based analysis of game events present in the `*desc-annotated_events.tsv` files
 - [`videogames_utils`](https://github.com/courtois-neuromod/videogames_utils): A set of utilitary functions to handle replay files and a GUI for QC purposes
