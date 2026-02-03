@@ -19,7 +19,6 @@ Additionally, several repositories extend the present dataset by providing tools
 - [`videogames_utils`](https://github.com/courtois-neuromod/videogames_utils): A set of utilitary functions to handle replay files and a GUI for QC purposes
 
 
-
 The `mario` repository includes:
 
 - **Gameplay recordings**: `.bk2` replay files capturing frame-per-frame gameplay
@@ -29,9 +28,25 @@ The `mario` repository includes:
 - **Low-level features**: Low-level features precomputed from the video (luminance, optical flow, audio envelope)
 - **Annotated events**: Detailed event annotations (button presses, kills, item collection, etc.)
 
+### Installation instructions
+
+```bash
+# Install datalad and git-annex
+pip install datalad datalad-installer
+datalad-installer git-annex
+
+# Clone the dataset
+datalad install git@github.com:courtois-neuromod/mario
+cd mario
+
+# Download all files (or use wildcards for specific files)
+datalad get .
+# e.g., datalad get */*/*/*.bk2
+```
+
 ### General Information
 
-- **Game**: Super Mario Bros (Nintendo Entertainment System, 1985)
+- **Game**: Super Mario Bros (Nintendo Entertainment System, 1985), World/US version
 - **Levels naming**: `w{world}l{level}` (e.g., w1l1, w8l4)
 - **Frame rate**: 60 Hz (60 frames per second)
 - **Files organization convention**: To differentiate the different hierchachical levels at which the data is organized we use the following convention: 
@@ -115,7 +130,7 @@ mario/
 
 ### Summary files
 
-Each replay includes high-level statistics:
+Each replay includes high-level information:
 - Duration, World, Level
 - Score gained, distance traveled, average speed
 - Lives lost, hits taken, enemies killed
