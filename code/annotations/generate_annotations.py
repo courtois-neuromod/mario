@@ -99,13 +99,13 @@ def create_runevents(runvars, run_id, events_dataframe, FS=60):
         events_df['duration'] = events_df['duration'].round(3)
         
         # Ensure integer types for frame columns and rep_index
-        for col in ['frame_start', 'frame_stop', 'rep_index']:
+        for col in ['frame_start', 'frame_stop', 'IndexInRun', 'IndexGlobal', 'IndexLevel']:
             if col in events_df.columns:
                 events_df[col] = events_df[col].astype('Int64')  # nullable integer
-        
-        # Reorder columns: trial_type, level, onset, duration, frame_start, frame_stop, phase, rep_index, stim_file
+
+        # Reorder columns: trial_type, level, onset, duration, frame_start, frame_stop, phase, IndexInRun, IndexGlobal, IndexLevel, stim_file
         cols = events_df.columns.tolist()
-        priority_cols = ['trial_type', 'level', 'onset', 'duration', 'frame_start', 'frame_stop', 'phase', 'rep_index', 'stim_file']
+        priority_cols = ['trial_type', 'level', 'onset', 'duration', 'frame_start', 'frame_stop', 'phase', 'IndexInRun', 'IndexGlobal', 'IndexLevel', 'stim_file']
         priority_cols = [c for c in priority_cols if c in cols]  # only include existing columns
         other_cols = [c for c in cols if c not in priority_cols]
         events_df = events_df[priority_cols + other_cols]
@@ -627,6 +627,15 @@ def main(args):
                                     with open(variables_sidecar_fname, "r") as f:
                                         repvars = json.load(f)
 
+                                    # Load summary sidecar for repetition indices
+                                    summary_fname = variables_sidecar_fname.replace("_variables.json", "_summary.json")
+                                    if op.exists(summary_fname):
+                                        with open(summary_fname, "r") as f:
+                                            summary = json.load(f)
+                                        events_dataframe.loc[events_dataframe["stim_file"] == bk2_file, "IndexInRun"] = summary["IndexInRun"]
+                                        events_dataframe.loc[events_dataframe["stim_file"] == bk2_file, "IndexGlobal"] = summary["IndexGlobal"]
+                                        events_dataframe.loc[events_dataframe["stim_file"] == bk2_file, "IndexLevel"] = summary["IndexLevel"]
+
                                     # Add info to repetition event
                                     events_dataframe.loc[
                                         events_dataframe["stim_file"] == bk2_file,
@@ -648,9 +657,6 @@ def main(args):
                                     ] = (
                                         int(len(repvars["score"])) / FS
                                     )
-
-                                    # Set rep_index to 0-based sequential index for gym-retro_game events
-                                    events_dataframe["rep_index"] = range(len(events_dataframe))
 
                                     runvars.append(repvars)
                                 else:
