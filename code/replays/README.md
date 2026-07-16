@@ -42,7 +42,7 @@ All variables rely on RAM addresses defined in `stimuli/SuperMarioBros-Nes/data.
 | Variable | Source / Logic |
 | :--- | :--- |
 | **Duration** | Total replay duration in seconds. |
-| **Outcome** | `cleared` (flag grabbed via jump_airborne == 3), `failed/timeout` (timer=0), `failed/fall` (off-screen or lives=-1), `failed/killed` (player_state 6 or 11). |
+| **Outcome** | `cleared` (flag grabbed via jump_airborne == 3), `failed/timeout` (timer=0), `failed/fall` (off-screen or lives=-1), `failed/killed` (player_state 6 or 11), `incomplete/warp` (no flag/death, `world` changed = warp-zone pipe exit e.g. W1-2/W4-2), `incomplete/interrupted` (no flag/death/warp = recording cut mid-level). |
 | **X_traveled** | Max distance reached from start. |
 | **Enemies_killed** | Count of enemies killed (stomp, impact, kick). |
 | **Hits_taken** | Count of powerup losses + life losses. |

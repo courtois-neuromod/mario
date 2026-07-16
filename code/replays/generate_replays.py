@@ -64,7 +64,11 @@ def _determine_outcome(repetition_variables):
     - failed/timeout: player_state=11 found in last 300 frames before final death with timer=0
     - failed/fall: Final death without player_state=11 in previous 300 frames
     - failed/killed: player_state=11 found in last 300 frames before final death with timer>0
-    - unknown: Could not determine outcome
+    - incomplete/warp: no flag and no death, but the player was transported to a
+      different world (warp-zone pipe exit, e.g. W1-2 / W4-2): 'world' changed.
+    - incomplete/interrupted: no flag, no death, no warp -> recording ended
+      mid-level (scanner stopped / aborted run).
+    - unknown: Could not determine outcome (missing variables / parse error only)
     """
     LOOKBACK_FRAMES = 300  # 5 seconds at 60 FPS
     
@@ -121,8 +125,15 @@ def _determine_outcome(repetition_variables):
         if repetition_variables["lives"][-1] == -1:
             return "failed/fall"
         
-        # Default to unknown if no clear outcome detected
-        return "unknown"
+        # No flag hit and no death: the player neither cleared (flagpole) nor
+        # lost a life. Distinguish a warp-zone pipe exit from an interrupted
+        # recording by whether the player was transported to another world.
+        # A warp (W1-2 / W4-2 warp zones) changes the 'world' index; an
+        # interrupted recording (scanner stopped / aborted run) does not.
+        world = repetition_variables.get("world", [])
+        if isinstance(world, list) and len(world) > 1 and world[0] != world[-1]:
+            return "incomplete/warp"
+        return "incomplete/interrupted"
     except (KeyError, IndexError):
         return "unknown"
 

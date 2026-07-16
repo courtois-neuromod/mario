@@ -91,6 +91,12 @@ def create_runevents(runvars, run_id, events_dataframe, FS=60):
                 temp_df["onset"] = temp_df["onset"] + repvars["rep_onset"]
                 all_df.append(temp_df)
 
+            # Warp (warp-zone pipe exit, e.g. W1-2 / W4-2)
+            temp_df = generate_warp_events(repvars, FS=FS)
+            if not temp_df.empty:
+                temp_df["onset"] = temp_df["onset"] + repvars["rep_onset"]
+                all_df.append(temp_df)
+
     try:
         events_df = pd.concat(all_df).sort_values(by="onset").reset_index(drop=True)
         
@@ -546,6 +552,61 @@ def generate_level_complete_events(repvars, FS=60):
     return events_df
 
 
+def generate_warp_events(repvars, FS=60):
+    """Generate a Warp event for warp-zone pipe exits (e.g. W1-2 / W4-2).
+
+    Emitted once, at the transport frame (where the 'world' index changes),
+    for repetitions whose summary Outcome is 'incomplete/warp' (the single
+    source of truth, computed by generate_replays._determine_outcome). Gating on
+    the Outcome guarantees Warp events correspond 1:1 to incomplete/warp reps.
+    """
+    onset = []
+    duration = []
+    trial_type = []
+    level = []
+    frame_start = []
+    frame_stop = []
+    empty = pd.DataFrame(
+        data={
+            "onset": onset,
+            "duration": duration,
+            "trial_type": trial_type,
+            "level": level,
+            "frame_start": frame_start,
+            "frame_stop": frame_stop,
+        }
+    )
+
+    if repvars.get("Outcome") != "incomplete/warp":
+        return empty
+
+    world = repvars.get("world", [])
+    if not isinstance(world, list) or len(world) < 2:
+        return empty
+
+    # Detect the transport frame (world index changes = warped out).
+    for idx in range(1, len(world)):
+        if world[idx] != world[idx - 1]:
+            onset.append(idx / FS)
+            duration.append(0)
+            trial_type.append("Warp")
+            level.append(repvars["level"])
+            frame_start.append(idx)
+            frame_stop.append(idx)
+            break  # Only one warp event per repetition
+
+    return pd.DataFrame(
+        data={
+            "onset": onset,
+            "duration": duration,
+            "trial_type": trial_type,
+            "level": level,
+            "frame_start": frame_start,
+            "frame_stop": frame_stop,
+        }
+    )
+
+
 def main(args):
     FS = 60
 
@@ -632,6 +693,10 @@ def main(args):
                                     if op.exists(summary_fname):
                                         with open(summary_fname, "r") as f:
                                             summary = json.load(f)
+                                        # Make the outcome available to event
+                                        # generators (e.g. Warp) as the single
+                                        # source of truth for the rep's ending.
+                                        repvars["Outcome"] = summary.get("Outcome")
                                         events_dataframe.loc[events_dataframe["stim_file"] == bk2_file, "IndexInRun"] = summary["IndexInRun"]
                                         events_dataframe.loc[events_dataframe["stim_file"] == bk2_file, "IndexGlobal"] = summary["IndexGlobal"]
                                         events_dataframe.loc[events_dataframe["stim_file"] == bk2_file, "IndexLevel"] = summary["IndexLevel"]
