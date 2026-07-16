@@ -1,2 +1,4 @@
 .pybids_cache/**
 env/
+__pycache__/
+sourcedata/
