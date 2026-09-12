@@ -23,6 +23,7 @@ import stable_retro as retro
 import pandas as pd
 import json
 import numpy as np
+from videogames_utils.events import outcome as events_outcome
 import gc
 from joblib import Parallel, delayed
 from tqdm_joblib import tqdm_joblib
@@ -56,88 +57,20 @@ def _calculate_distance_traveled(repetition_variables):
 
 
 def _determine_outcome(repetition_variables):
-    """
-    Determine how the replay ended: 'cleared' or 'failed/*'.
-    
-    Outcome values (consistent with generate_annotations.py):
-    - cleared: Level completed successfully (flag grabbed = jump_airborne == 3)
-    - failed/timeout: player_state=11 found in last 300 frames before final death with timer=0
-    - failed/fall: Final death without player_state=11 in previous 300 frames
-    - failed/killed: player_state=11 found in last 300 frames before final death with timer>0
-    - incomplete/warp: no flag and no death, but the player was transported to a
-      different world (warp-zone pipe exit, e.g. W1-2 / W4-2): 'world' changed.
-    - incomplete/interrupted: no flag, no death, no warp -> recording ended
-      mid-level (scanner stopped / aborted run).
-    - unknown: Could not determine outcome (missing variables / parse error only)
-    """
-    LOOKBACK_FRAMES = 300  # 5 seconds at 60 FPS
-    
-    try:
-        # Check for flag pole grab FIRST (jump_airborne == 3 indicates flag grab)
-        # This is the same logic as Level_complete detection
-        if "jump_airborne" in repetition_variables:
-            jump_airborne = repetition_variables["jump_airborne"]
-            for idx in range(1, len(jump_airborne)):
-                if jump_airborne[idx] == 3 and jump_airborne[idx - 1] != 3:
-                    # Flag was grabbed - level was cleared
-                    return "cleared"
-        
-        lives_start = repetition_variables["lives"][0]
-        lives_end = repetition_variables["lives"][-1]
-        
-        # Check if lives decreased (death occurred)
-        if lives_end < lives_start:
-            # Find the LAST frame where lives decreased (final death)
-            diff_lives = list(np.diff(repetition_variables["lives"]))
-            last_death_frame = None
-            for idx_val, val in enumerate(diff_lives):
-                if val < 0:
-                    last_death_frame = idx_val  # Keep updating to get the last one
-            
-            if last_death_frame is not None:
-                # Look back up to 300 frames to find player_state == 11
-                player_state = repetition_variables["player_state"]
-                check_start = max(0, last_death_frame - LOOKBACK_FRAMES)
-                check_end = last_death_frame + 1
-                
-                # Find if player_state was 11 in the lookback window
-                player_state_11_frame = None
-                for frame_idx in range(check_start, check_end):
-                    if player_state[frame_idx] == 11:
-                        player_state_11_frame = frame_idx
-                        break
-                
-                if player_state_11_frame is not None:
-                    # Check timer at that frame
-                    timer_val = repetition_variables.get("time", [1])[player_state_11_frame] if "time" in repetition_variables else 1
-                    
-                    if timer_val == 0:
-                        return "failed/timeout"
-                    else:
-                        return "failed/killed"
-                else:
-                    # No player_state=11 found - this is a fall
-                    return "failed/fall"
-        
-        # Check for fall death using end state (fallback)
-        if repetition_variables["player_y_screen"][-1] > 1:
-            return "failed/fall"
-        if repetition_variables["lives"][-1] == -1:
-            return "failed/fall"
-        
-        # No flag hit and no death: the player neither cleared (flagpole) nor
-        # lost a life. Distinguish a warp-zone pipe exit from an interrupted
-        # recording by whether the player was transported to another world.
-        # A warp (W1-2 / W4-2 warp zones) changes the 'world' index; an
-        # interrupted recording (scanner stopped / aborted run) does not.
-        world = repetition_variables.get("world", [])
-        if isinstance(world, list) and len(world) > 1 and world[0] != world[-1]:
-            return "incomplete/warp"
-        return "incomplete/interrupted"
-    except (KeyError, IndexError):
-        return "unknown"
+    """How the repetition ended.
 
+    Delegates to ``videogames_utils.events.outcome``, which implements this once
+    for all four datasets. The label vocabulary is unchanged.
 
+    The previous implementation lived here and tested ``jump_airborne == 3`` for
+    level completion; that value is also set while climbing a vine, so warp exits
+    taken up the W1-2 / W4-2 vines were labelled "cleared". It is replaced by the
+    engine's own PlayerEndLevel routine. Verified over the whole corpus: 71 of
+    3374 mario and 59 of 1232 mariostars repetitions change label, and every
+    reclassification to "incomplete/warp" lands on w1l2 or w4l2 -- the only two
+    warp-zone levels -- with the world index changing on the final frame.
+    """
+    return events_outcome.determine(repetition_variables, "mario")
 def _count_enemy_kills_for_slot(repetition_variables, slot_idx):
     """Count kills for a specific enemy slot."""
     kill_count = 0
@@ -429,7 +362,7 @@ def process_bk2_file(task, args):
 
     # Check if all required outputs already exist - skip if so
     all_exist, missing_outputs = _check_outputs_exist(paths, args)
-    if all_exist:
+    if all_exist and not getattr(args, "force", False):
         logging.info(f"Skipping (all outputs exist): {paths['entities']}")
         return
     else:
@@ -669,6 +602,13 @@ if __name__ == "__main__":
         "--skip_lowlevel",
         action="store_true",
         help="Skip generating low-level features (_lowlevel.npy) - luminance, optical flow, audio envelope.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Regenerate outputs even when they already exist. Required when the "
+             "integration's data.json has gained new RAM variables, since the existing "
+             "_variables.json would otherwise be kept and the new variables never appear.",
     )
     parser.add_argument(
         "-v",

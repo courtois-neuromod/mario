@@ -1,0 +1,75 @@
+{
+  "onset": {
+    "Description": "Onset of the event, in seconds from the start of the run.",
+    "Units": "s"
+  },
+  "duration": {
+    "Description": "Duration of the event in seconds. Zero for point events.",
+    "Units": "s"
+  },
+  "trial_type": {
+    "Description": "Event type, from a controlled vocabulary shared by the CNeuroMod videogame datasets.",
+    "Levels": {
+      "Player_damaged": "The player is hit and loses the current power-up state (Mario games) or health (Shinobi). Formerly: 'Hit/powerup_lost', 'HealthLoss'.",
+      "Player_died/Enemy": "The player dies after being hit by an enemy or another damaging object. Formerly: 'Hit/life_lost', 'Hit/killed'.",
+      "Player_died/Fall": "The player falls into a pit and dies. `onset` is the frame the player drops below the bottom of the screen and `duration` runs to the frame the life is actually lost, about 4 s later -- the game lets the player fall out of the level before resetting. Formerly: 'Hit/fall'.",
+      "Player_died/Timeout": "The player dies because the level timer ran out. Formerly: 'Hit/timeout'.",
+      "Life_gained": "The player collects or earns an extra life.",
+      "Player_state/Small": "The player is small Mario: no power-up. Together with the other form rows this covers every frame on which the player is alive in the level.",
+      "Player_state/Super": "The player is Super (big) Mario, from the frame the mushroom is collected until hit, death or the end of the repetition. Formerly: 'Powerup_started/Super'.",
+      "Player_state/Fire": "The player is Fire Mario (can throw fireballs). Formerly: 'Powerup_started/Fire'.",
+      "Player_state/Star": "Star invincibility is active. Formerly: 'Powerup_started/Star', 'Powerup_expired/Star', 'Star_activated'.",
+      "Player_state/Hit_recovery": "Post-hit recovery: the player has just been damaged and blinks. In the Mario games nothing can hurt the player until it ends; in Shinobi it is the game's post-hit counter.",
+      "Item_on_screen/*": "A coin, mushroom, flower, star or extra life is visible on screen. `duration` spans the time it is visible. The * stands for item_type. Formerly: 'Item_appeared/{item_type}'.",
+      "Item_collected/Coin": "The player collects a coin. Formerly: 'Coin_collected'.",
+      "Item_collected/Powerup": "The player collects a mushroom, flower, star or other power-up item. Formerly: 'Powerup_collected'.",
+      "Block_smashed": "The player destroys a breakable brick block from below. Formerly: 'Brick_smashed'.",
+      "Enemy_on_screen/*": "A specific enemy type is visible on screen. `duration` runs from the frame it becomes visible until it leaves the screen or is defeated; an enemy that leaves and returns produces two separate events. The * stands for enemy_type. Formerly: 'Enemy_appeared/{enemy_type}'.",
+      "Enemy_attack/*": "An enemy begins an attack, such as firing a projectile or emerging from a pipe. The * stands for enemy_type.",
+      "Enemy_defeated/Stomp/*": "The player defeats an enemy by jumping on it. The * stands for enemy_type. Formerly: 'Kill/stomp'.",
+      "Enemy_defeated/Projectile/*": "The player defeats an enemy with a fireball or other projectile. The * stands for enemy_type. Formerly: 'Kill/impact'.",
+      "Enemy_defeated/Shell/*": "The player defeats an enemy using a moving shell. The * stands for enemy_type. Formerly: 'Kill/kick'.",
+      "Projectile_on_screen/*": "A fireball, Bullet Bill, hammer or other moving projectile is visible on screen. `duration` spans the time it is visible. The * stands for projectile_type. Formerly: 'Projectile_appeared/{projectile_type}'.",
+      "Shell_started_moving": "A shell begins moving after being kicked or otherwise activated.",
+      "Pipe_entered": "The player enters a pipe.",
+      "Checkpoint_reached": "The player passes the level checkpoint that changes the restart position.",
+      "Flagpole_visible": "The flagpole at the end of the level becomes visible on screen.",
+      "Castle_visible": "The end-of-level castle becomes visible on screen.",
+      "Timer_warning_started": "The game begins warning the player that little time remains.",
+      "Level_started": "A new level or gameplay attempt begins.",
+      "Level_restarted": "The level restarts after the player dies.",
+      "Level_completed": "The player successfully finishes the level. In Shinobi this is the start of the end-of-level fade that closes the recording; it is missed in the few cleared repetitions whose recording stopped before the fade. Formerly: 'Level_complete'.",
+      "Level_exited/Warp": "The player left the level through a warp-zone pipe rather than finishing it. Not part of Event-Types.pdf; retained from the previous vocabulary. Formerly: 'Warp'.",
+      "Action/Left": "The player holds the left direction. Formerly: 'LEFT'.",
+      "Action/Right": "The player holds the right direction. Formerly: 'RIGHT'.",
+      "Action/Up": "The player holds the up direction. Formerly: 'UP'.",
+      "Action/Down": "The player holds the down direction (duck / crouch). Formerly: 'DOWN'.",
+      "Action/Jump": "The player presses the jump button. Formerly: 'JUMP'.",
+      "Action/Run": "The player presses the run / throw button (Mario games). Formerly: 'RUN/THROW'.",
+      "Action/Other": "The player presses a button with no documented function in this game (e.g. L/R on the SNES pad in Super Mario All-Stars). The raw button is in the `button` column.",
+      "Action/Start": "The player presses START (pauses the game). Formerly: 'START'.",
+      "Action/Select": "The player presses SELECT / MODE. Formerly: 'SELECT', 'MODE'.",
+      "Screen/Gameplay": "The player controls the character in the level. The Screen/* rows of a repetition partition it: exactly one is active at any frame, and this is the complement of all the others.",
+      "Screen/Level_intro": "The level's title card: Super Mario Bros.' black 'WORLD x-y / Mario x n' screen, shown when the level starts and again after each death before play resumes. mario3 and shinobi have no intro screen.",
+      "Screen/Death": "The death sequence: from the frame the player dies, or drops off the bottom of the screen, to the end of the death animation and the freeze that follows it. The player has no control.",
+      "Screen/Level_end": "The end-of-level sequence after the level is completed: the flagpole slide, walk into the castle and time bonus (SMB1); the goal card and COURSE CLEAR screen (mario3); the ROUND CLEAR bonus tally (shinobi). The player has no control.",
+      "Screen/Transition": "A transition inside a level with no player control: pipe, vine or door travel and the black or fading screen while the next area loads (SMB1 pipes, vines and the exit from a bonus area; mario3 pipes and doors; shinobi section fades), and the fade back into play after a shinobi death.",
+      "gym-retro_game": "One repetition of gameplay (one .bk2 file). This is the container row that carries `stim_file`; all other events fall inside its window."
+    }
+  },
+  "level": {
+    "Description": "Level identifier of the repetition the event belongs to."
+  },
+  "frame_start": {
+    "Description": "Index of the first emulator frame of the event, relative to the start of its repetition."
+  },
+  "frame_stop": {
+    "Description": "Index of the last emulator frame of the event, relative to the start of its repetition."
+  },
+  "button": {
+    "Description": "Raw controller button underlying an Action/* event. n/a for all other events."
+  },
+  "stim_file": {
+    "Description": "Path to the .bk2 replay of the repetition. Set on the gym-retro_game row only; every other event falls inside exactly one of those windows. Per-repetition metadata (phase, IndexInRun, IndexGlobal, IndexLevel, Outcome) lives in the matching gamelogs/*_summary.json."
+  }
+}
