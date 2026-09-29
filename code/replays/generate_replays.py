@@ -31,11 +31,17 @@ from tqdm import tqdm
 import logging
 from videogames_utils.replay import get_variables_from_replay
 from videogames_utils.video import make_mp4
+from videogames_utils.events.emit import FRAME_RATES
 from videogames_utils.psychophysics import (
     compute_luminance,
     compute_optical_flow,
     audio_envelope_per_frame,
 )
+
+
+# Native emulator frame rate. Videos, durations and per-frame features all use it,
+# so they stay aligned with the replay audio and the annotated events.
+FRAME_RATE = FRAME_RATES["SuperMarioBros-Nes"]
 
 
 # ============================================================================
@@ -143,7 +149,7 @@ def create_sidecar_dict(repetition_variables):
         Dictionary with summary statistics for the replay
     """
     world, level = _calculate_world_and_level(repetition_variables["level"])
-    duration = len(repetition_variables["score"]) / 60
+    duration = len(repetition_variables["score"]) / FRAME_RATE
     distance = _calculate_distance_traveled(repetition_variables)
 
     return {
@@ -280,7 +286,7 @@ def _save_optional_outputs(
     """Save video, variables, and lowlevel files if not skipped."""
     if not args.skip_videos:
         os.makedirs(os.path.dirname(paths["mp4"]), exist_ok=True)
-        make_mp4(replay_frames, paths["mp4"], audio=audio_track, sample_rate=audio_rate)
+        make_mp4(replay_frames, paths["mp4"], audio=audio_track, sample_rate=audio_rate, fps=FRAME_RATE)
         logging.info(f"Video saved to: {paths['mp4']}")
 
     if not args.skip_variables:
@@ -297,7 +303,7 @@ def _save_optional_outputs(
         audio_envelope = audio_envelope_per_frame(
             audio_track,
             sample_rate=audio_rate,
-            frame_rate=60.0,
+            frame_rate=FRAME_RATE,
             frame_count=len(replay_frames),
         )
 
