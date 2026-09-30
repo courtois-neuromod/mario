@@ -178,16 +178,16 @@ Onsets are computed at the console's true frame rate (60.099827 Hz, read from th
 emulator core) rather than the 60.0 Hz previously assumed.
 
 **Event types** are drawn from a controlled vocabulary shared by all four CNeuroMod
-videogame datasets, grouped as: player events (`Player_damaged`, `Player_died/*`,
-`Life_gained`), player states (`Player_state/*`: one durational row per stretch of
+videogame datasets, grouped as: player events (`PlayerDamaged`, `PlayerDied/*`,
+`LifeGained`), player states (`PlayerState/*`: one durational row per stretch of
 Small, Super or Fire, which together cover every frame the player is alive, plus Star and
 post-hit recovery overlays), screens (`Screen/*`: one durational row per stretch of
 gameplay, title card, death sequence, end-of-level sequence or transition, which together
-partition every repetition), items and blocks (`Item_on_screen/*`, `Item_collected/*`,
-`Block_smashed`), enemies (`Enemy_on_screen/*`, `Enemy_defeated/{Stomp,Projectile,Shell}/*`),
-environment (`Pipe_entered`, `Flagpole_visible`, `Castle_visible`,
-`Timer_warning_started`), level events (`Level_started`, `Level_completed`,
-`Level_exited/Warp`) and controller actions (`Action/*`, with the raw button in the
+partition every repetition), items and blocks (`ItemOnScreen/*`, `ItemCollected/*`,
+`BlockSmashed`), enemies (`EnemyOnScreen/*`, `EnemyDefeated/{Stomp,Projectile,Shell}/*`),
+environment (`PipeEntered`, `FlagpoleVisible`, `CastleVisible`,
+`TimerWarningStarted`), level events (`LevelStarted`, `LevelCompleted`,
+`LevelExited/Warp`) and controller actions (`Action/*`, with the raw button in the
 `button` column).
 
 > **Note on a vocabulary change.** Every `trial_type` was renamed relative to the first
