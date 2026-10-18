@@ -380,7 +380,6 @@ def process_bk2_file(task, args):
     repetition_variables, _, replay_frames, audio_track, audio_rate = (
         get_variables_from_replay(
             op.join(data_path, bk2_file),
-            skip_first_step=(idx_in_run == 0),
             game=game_name,
             inttype=retro.data.Integrations.CUSTOM_ONLY,
         )
