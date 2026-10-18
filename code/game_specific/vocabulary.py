@@ -1,0 +1,201 @@
+"""The ``trial_type`` vocabulary of Super Mario Bros. (NES).
+
+Every event this game may emit, in the order of the README and the BIDS sidecar.
+"""
+
+from videogames_utils.events.vocabulary import EventType
+
+VOCABULARY = [
+    EventType("PlayerDamaged",
+              "The player is hit and loses the current power-up state (Mario games) or "
+              "health (Shinobi).",
+              former=("Hit/powerup_lost", "HealthLoss", "Player_damaged")),
+    EventType("PlayerDied/Enemy",
+              "The player dies after being hit by an enemy or another damaging object.",
+              former=("Hit/life_lost", "Hit/killed", "Player_died/Enemy")),
+    EventType("PlayerDied/Fall",
+              "The player falls into a pit and dies. `onset` is the frame the player "
+              "drops below the bottom of the screen and `duration` runs to the frame "
+              "the life is actually lost, about 4 s later -- the game lets the player "
+              "fall out of the level before resetting.",
+              former=("Hit/fall", "Player_died/Fall"),
+              durational=True),
+    EventType("PlayerDied/Timeout",
+              "The player dies because the level timer ran out.",
+              former=("Hit/timeout", "Player_died/Timeout")),
+    EventType("LifeGained",
+              "The player collects or earns an extra life.",
+              former=("Life_gained",)),
+    EventType("PlayerState/Small",
+              "The player is small Mario: no power-up. Together with the other form "
+              "rows this covers every frame on which the player is alive in the level.",
+              former=("Player_state/Small",),
+              durational=True),
+    EventType("PlayerState/Super",
+              "The player is Super (big) Mario, from the frame the mushroom is "
+              "collected until hit, death or the end of the repetition.",
+              former=("Powerup_started/Super", "Player_state/Super"),
+              durational=True),
+    EventType("PlayerState/Fire",
+              "The player is Fire Mario (can throw fireballs).",
+              former=("Powerup_started/Fire", "Player_state/Fire"),
+              durational=True),
+    EventType("PlayerState/Star",
+              "Star invincibility is active.",
+              former=("Powerup_started/Star",
+                      "Powerup_expired/Star",
+                      "Star_activated",
+                      "Player_state/Star"),
+              durational=True),
+    EventType("PlayerState/HitRecovery",
+              "Post-hit recovery: the player has just been damaged and blinks. In the "
+              "Mario games nothing can hurt the player until it ends; in Shinobi it is "
+              "the game's post-hit counter.",
+              former=("Player_state/Hit_recovery",),
+              durational=True),
+    EventType("ItemOnScreen/{item_type}",
+              "A coin, mushroom, flower, star or extra life is visible on screen. "
+              "`duration` spans the time it is visible.",
+              former=("Item_appeared/{item_type}", "Item_on_screen/{item_type}"),
+              durational=True),
+    EventType("ItemCollected/Coin",
+              "The player collects a coin.",
+              former=("Coin_collected", "Item_collected/Coin")),
+    EventType("ItemCollected/Powerup",
+              "The player collects a mushroom, flower, star or other power-up item.",
+              former=("Powerup_collected", "Item_collected/Powerup")),
+    EventType("BlockSmashed",
+              "The player destroys a breakable brick block from below.",
+              former=("Brick_smashed", "Block_smashed")),
+    EventType("EnemyOnScreen/{enemy_type}",
+              "A specific enemy type is visible on screen. `duration` runs from the "
+              "frame it becomes visible until it leaves the screen or is defeated; an "
+              "enemy that leaves and returns produces two separate events.",
+              former=("Enemy_appeared/{enemy_type}", "Enemy_on_screen/{enemy_type}"),
+              durational=True),
+    EventType("EnemyAttack/{enemy_type}",
+              "An enemy begins an attack, such as firing a projectile or emerging from "
+              "a pipe.",
+              former=("Enemy_attack/{enemy_type}",)),
+    EventType("EnemyDefeated/Stomp/{enemy_type}",
+              "The player defeats an enemy by jumping on it.",
+              former=("Kill/stomp", "Enemy_defeated/Stomp/{enemy_type}")),
+    EventType("EnemyDefeated/Projectile/{enemy_type}",
+              "The player defeats an enemy with a fireball or other projectile.",
+              former=("Kill/impact", "Enemy_defeated/Projectile/{enemy_type}")),
+    EventType("EnemyDefeated/Shell/{enemy_type}",
+              "The player defeats an enemy using a moving shell.",
+              former=("Kill/kick", "Enemy_defeated/Shell/{enemy_type}")),
+    EventType("ProjectileOnScreen/{projectile_type}",
+              "A fireball, Bullet Bill, hammer or other moving projectile is visible "
+              "on screen. `duration` spans the time it is visible.",
+              former=("Projectile_appeared/{projectile_type}",
+                      "Projectile_on_screen/{projectile_type}"),
+              durational=True),
+    EventType("ShellStartedMoving",
+              "A shell begins moving after being kicked or otherwise activated.",
+              former=("Shell_started_moving",)),
+    EventType("PipeEntered",
+              "The player enters a pipe.",
+              former=("Pipe_entered",)),
+    EventType("CheckpointReached",
+              "The player passes the level checkpoint that changes the restart "
+              "position.",
+              former=("Checkpoint_reached",)),
+    EventType("FlagpoleVisible",
+              "The flagpole at the end of the level becomes visible on screen.",
+              former=("Flagpole_visible",)),
+    EventType("CastleVisible",
+              "The end-of-level castle becomes visible on screen.",
+              former=("Castle_visible",)),
+    EventType("TimerWarningStarted",
+              "The game begins warning the player that little time remains.",
+              former=("Timer_warning_started",)),
+    EventType("LevelStarted",
+              "A new level or gameplay attempt begins.",
+              former=("Level_started",)),
+    EventType("LevelRestarted",
+              "The level restarts after the player dies.",
+              former=("Level_restarted",)),
+    EventType("LevelCompleted",
+              "The player successfully finishes the level. In Shinobi this is the "
+              "start of the end-of-level fade that closes the recording; it is missed "
+              "in the few cleared repetitions whose recording stopped before the fade.",
+              former=("Level_complete", "Level_completed")),
+    EventType("LevelExited/Warp",
+              "The player left the level through a warp-zone pipe rather than "
+              "finishing it. Not part of Event-Types.pdf; retained from the previous "
+              "vocabulary.",
+              former=("Warp", "Level_exited/Warp")),
+    EventType("Action/Left",
+              "The player holds the left direction.",
+              former=("LEFT",),
+              durational=True),
+    EventType("Action/Right",
+              "The player holds the right direction.",
+              former=("RIGHT",),
+              durational=True),
+    EventType("Action/Up",
+              "The player holds the up direction.",
+              former=("UP",),
+              durational=True),
+    EventType("Action/Down",
+              "The player holds the down direction (duck / crouch).",
+              former=("DOWN",),
+              durational=True),
+    EventType("Action/Jump",
+              "The player presses the jump button.",
+              former=("JUMP",),
+              durational=True),
+    EventType("Action/Run",
+              "The player presses the run / throw button (Mario games).",
+              former=("RUN/THROW",),
+              durational=True),
+    EventType("Action/Other",
+              "The player presses a button with no documented function in this game "
+              "(e.g. L/R on the SNES pad in Super Mario All-Stars). The raw button is "
+              "in the `button` column.",
+              durational=True),
+    EventType("Action/Start",
+              "The player presses START (pauses the game).",
+              former=("START",),
+              durational=True),
+    EventType("Action/Select",
+              "The player presses SELECT / MODE.",
+              former=("SELECT", "MODE"),
+              durational=True),
+    EventType("Screen/Gameplay",
+              "The player controls the character in the level. The Screen/* rows of a "
+              "repetition partition it: exactly one is active at any frame, and this "
+              "is the complement of all the others.",
+              durational=True),
+    EventType("Screen/LevelIntro",
+              "The level's title card: Super Mario Bros.' black 'WORLD x-y / Mario x "
+              "n' screen, shown when the level starts and again after each death "
+              "before play resumes. mario3 and shinobi have no intro screen.",
+              former=("Screen/Level_intro",),
+              durational=True),
+    EventType("Screen/Death",
+              "The death sequence: from the frame the player dies, or drops off the "
+              "bottom of the screen, to the end of the death animation and the freeze "
+              "that follows it. The player has no control.",
+              durational=True),
+    EventType("Screen/LevelEnd",
+              "The end-of-level sequence after the level is completed: the flagpole "
+              "slide, walk into the castle and time bonus (SMB1); the goal card and "
+              "COURSE CLEAR screen (mario3); the ROUND CLEAR bonus tally (shinobi). "
+              "The player has no control.",
+              former=("Screen/Level_end",),
+              durational=True),
+    EventType("Screen/Transition",
+              "A transition inside a level with no player control: pipe, vine or door "
+              "travel and the black or fading screen while the next area loads (SMB1 "
+              "pipes, vines and the exit from a bonus area; mario3 pipes and doors; "
+              "shinobi section fades), and the fade back into play after a shinobi "
+              "death.",
+              durational=True),
+    EventType("gym-retro_game",
+              "One repetition of gameplay (one .bk2 file). This is the container row "
+              "that carries `stim_file`; all other events fall inside its window.",
+              durational=True),
+]
