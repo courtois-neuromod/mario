@@ -29,7 +29,7 @@ from joblib import Parallel, delayed
 from tqdm_joblib import tqdm_joblib
 from tqdm import tqdm
 import logging
-from videogames_utils.replay import get_variables_from_replay
+from videogames_utils.replay import done_problem, get_variables_from_replay
 from videogames_utils.video import make_mp4
 from videogames_utils.events.emit import FRAME_RATES
 from videogames_utils.psychophysics import (
@@ -377,13 +377,15 @@ def process_bk2_file(task, args):
         )
 
     # Get replay data with audio
-    repetition_variables, _, replay_frames, audio_track, audio_rate = (
+    repetition_variables, replay_info, replay_frames, audio_track, audio_rate = (
         get_variables_from_replay(
             op.join(data_path, bk2_file),
             game=game_name,
             inttype=retro.data.Integrations.CUSTOM_ONLY,
         )
     )
+    problem = done_problem([info["done"] for info in replay_info], bk2_file)
+    del replay_info
 
     _save_optional_outputs(
         args,
@@ -411,6 +413,7 @@ def process_bk2_file(task, args):
         del audio_track
     # Force garbage collection to release memory immediately
     gc.collect()
+    return problem
 
 
 def _configure_logging(verbose):
@@ -505,15 +508,26 @@ def _collect_all_bk2_files(data_path, subjects=None, sessions=None):
 def _run_parallel_processing(tasks, args):
     """Process tasks in parallel using joblib."""
     with tqdm_joblib(tqdm(desc="Processing files", total=len(tasks))):
-        Parallel(n_jobs=args.n_jobs, max_nbytes=None)(
+        return Parallel(n_jobs=args.n_jobs, max_nbytes=None)(
             delayed(process_bk2_file)(task, args) for task in tasks
         )
 
 
 def _run_sequential_processing(tasks, args):
     """Process tasks sequentially with progress bar."""
-    for task in tqdm(tasks, desc="Processing files"):
-        process_bk2_file(task, args)
+    return [process_bk2_file(task, args) for task in tqdm(tasks, desc="Processing files")]
+
+
+def _report_done_problems(problems):
+    """Print every replay whose done flag is not set on its last frame only."""
+    problems = [p for p in problems if p]
+    if problems:
+        banner = "!" * 80
+        logging.warning(
+            f"\n{banner}\n{len(problems)} replay(s) do not end on done:\n"
+            + "\n".join(problems)
+            + f"\n{banner}"
+        )
 
 
 def main(args):
@@ -557,9 +571,10 @@ def main(args):
     logging.info(f"Using {n_jobs} parallel jobs")
 
     if n_jobs != 1:
-        _run_parallel_processing(tasks, args)
+        problems = _run_parallel_processing(tasks, args)
     else:
-        _run_sequential_processing(tasks, args)
+        problems = _run_sequential_processing(tasks, args)
+    _report_done_problems(problems)
 
 
 if __name__ == "__main__":
