@@ -5,7 +5,7 @@ See :class:`videogames_utils.events.game.Game`.
 
 from videogames_utils.events.game import Game
 
-from . import docs, generator, outcome, ram, validation
+from . import docs, generator, outcome, ram, replays, validation
 from .vocabulary import VOCABULARY
 
 
@@ -17,6 +17,8 @@ GAME = Game(
     vocabulary=VOCABULARY,
     generate=generator.generate,
     outcome=outcome.outcome,
+    summary=replays.summary,
+    phases=replays.phases,
     form_states=frozenset({"PlayerState/Small", "PlayerState/Super",
                            "PlayerState/Fire"}),
     form_var="player_status",
