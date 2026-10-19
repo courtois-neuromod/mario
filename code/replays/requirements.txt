@@ -1,11 +1,1 @@
-numpy
-pandas
-stable-retro
-joblib
-tqdm
-tqdm-joblib
-moviepy
-opencv-python
-Pillow
-scikit-video
 ./code/videogames_utils  # git submodule; run pip from the dataset root
