@@ -50,7 +50,9 @@ For each `sub-*_ses-*_task-mario_*.bk2`:
 
 - `*_variables.json`: the game variables of `data.json`, one value per frame, and the
   buttons pressed.
-- `*_recording.mp4`: the replay with its audio, at the emulator's frame rate.
+- `*_recording.mp4`: the replay with its audio, at 60 frames per second, the rate at which
+  the game was displayed until May 2022 (see `FRAME_RATE` in
+  `code/game_specific/generator.py`).
 - `*_lowlevel.npy`: luminance, optical flow and audio envelope, per frame.
 - `*_summary.json`: one record per repetition, below.
 
