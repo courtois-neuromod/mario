@@ -96,7 +96,7 @@ SMB1_ENEMY_IDS: Dict[int, str] = {
     0x29: "DropPlatform", 0x2A: "HorizontalPlatform", 0x2B: "PlatformLiftUp",
     0x2C: "PlatformLiftDown", 0x2D: "Bowser", 0x2E: "PowerUpObject",
     0x2F: "VineObject", 0x30: "FlagpoleFlagObject", 0x31: "StarFlagObject",
-    0x32: "JumpspringObject", 0x33: "BulletBillCannon", 0x34: "Unknown0x34",
+    0x32: "JumpspringObject", 0x33: "BulletBillCannon", 0x34: "WarpZoneObject",
     0x35: "RetainerObject", 0x36: "EndOfEnemyObjects",
 }
 
@@ -106,9 +106,12 @@ SMB1_PLATFORM_IDS = frozenset(range(0x24, 0x2D))
 #: Items, scenery and end-of-level objects that occupy an enemy slot.
 SMB1_ITEM_SCENERY_IDS = frozenset({0x16, 0x2E, 0x2F, 0x30, 0x31, 0x32, 0x35, 0x36})
 
-#: Spawner / control objects that occupy an enemy slot without ever being drawn.
-#: They churn through a slot a frame at a time and must not produce Enemy_* events.
-SMB1_SPAWNER_IDS = frozenset({0x17, 0x18})
+#: Spawner / control objects that occupy an enemy slot without ever being drawn, and
+#: must not produce Enemy_* events. The frenzy spawners (0x17, 0x18) churn through a
+#: slot a frame at a time. The warp-zone trigger (0x34, ``WarpZoneObject`` in
+#: SMBDIS.ASM) waits in its slot until the player reaches it, then makes the warp pipes
+#: appear and erases itself.
+SMB1_SPAWNER_IDS = frozenset({0x17, 0x18, 0x34})
 
 #: The two ids a Bullet Bill can occupy: 0x08 when spawned by a frenzy and 0x33 when
 #: fired from a cannon. Both are the same object -- measured over 120 mario replays,
