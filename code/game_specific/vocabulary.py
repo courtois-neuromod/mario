@@ -1,14 +1,13 @@
 """The ``trial_type`` vocabulary of Super Mario Bros. (NES).
 
-Every event this game may emit, in the order of the README and the BIDS sidecar.
+Every event this game may emit.
 """
 
 from videogames_utils.events.vocabulary import EventType
 
 VOCABULARY = [
     EventType("PlayerDamaged",
-              "The player is hit and loses the current power-up state (Mario games) or "
-              "health (Shinobi).",
+              "The player is hit and loses the current power-up state.",
               former=("Hit/powerup_lost", "HealthLoss", "Player_damaged")),
     EventType("PlayerDied/Enemy",
               "The player dies after being hit by an enemy or another damaging object.",
@@ -48,9 +47,8 @@ VOCABULARY = [
                       "Player_state/Star"),
               durational=True),
     EventType("PlayerState/HitRecovery",
-              "Post-hit recovery: the player has just been damaged and blinks. In the "
-              "Mario games nothing can hurt the player until it ends; in Shinobi it is "
-              "the game's post-hit counter.",
+              "Post-hit recovery: the player has just been damaged and blinks, and "
+              "nothing can hurt them until it ends.",
               former=("Player_state/Hit_recovery",),
               durational=True),
     EventType("ItemOnScreen/{item_type}",
@@ -118,14 +116,11 @@ VOCABULARY = [
               "The level restarts after the player dies.",
               former=("Level_restarted",)),
     EventType("LevelCompleted",
-              "The player successfully finishes the level. In Shinobi this is the "
-              "start of the end-of-level fade that closes the recording; it is missed "
-              "in the few cleared repetitions whose recording stopped before the fade.",
+              "The player successfully finishes the level.",
               former=("Level_complete", "Level_completed")),
     EventType("LevelExited/Warp",
               "The player left the level through a warp-zone pipe rather than "
-              "finishing it. Not part of Event-Types.pdf; retained from the previous "
-              "vocabulary.",
+              "finishing it.",
               former=("Warp", "Level_exited/Warp")),
     EventType("Action/Left",
               "The player holds the left direction.",
@@ -148,20 +143,19 @@ VOCABULARY = [
               former=("JUMP",),
               durational=True),
     EventType("Action/Run",
-              "The player presses the run / throw button (Mario games).",
+              "The player presses the run / throw button.",
               former=("RUN/THROW",),
               durational=True),
     EventType("Action/Other",
-              "The player presses a button with no documented function in this game "
-              "(e.g. L/R on the SNES pad in Super Mario All-Stars). The raw button is "
-              "in the `button` column.",
+              "The player presses a button with no documented function in this game. "
+              "The raw button is in the `button` column.",
               durational=True),
     EventType("Action/Start",
               "The player presses START (pauses the game).",
               former=("START",),
               durational=True),
     EventType("Action/Select",
-              "The player presses SELECT / MODE.",
+              "The player presses SELECT.",
               former=("SELECT", "MODE"),
               durational=True),
     EventType("Screen/Gameplay",
@@ -170,9 +164,8 @@ VOCABULARY = [
               "is the complement of all the others.",
               durational=True),
     EventType("Screen/LevelIntro",
-              "The level's title card: Super Mario Bros.' black 'WORLD x-y / Mario x "
-              "n' screen, shown when the level starts and again after each death "
-              "before play resumes. mario3 and shinobi have no intro screen.",
+              "The level's title card: the black 'WORLD x-y / Mario x n' screen, shown "
+              "when the level starts and again after each death before play resumes.",
               former=("Screen/Level_intro",),
               durational=True),
     EventType("Screen/Death",
@@ -182,20 +175,18 @@ VOCABULARY = [
               durational=True),
     EventType("Screen/LevelEnd",
               "The end-of-level sequence after the level is completed: the flagpole "
-              "slide, walk into the castle and time bonus (SMB1); the goal card and "
-              "COURSE CLEAR screen (mario3); the ROUND CLEAR bonus tally (shinobi). "
-              "The player has no control.",
+              "slide, the walk into the castle and the time bonus. The player has no "
+              "control.",
               former=("Screen/Level_end",),
               durational=True),
     EventType("Screen/Transition",
-              "A transition inside a level with no player control: pipe, vine or door "
-              "travel and the black or fading screen while the next area loads (SMB1 "
-              "pipes, vines and the exit from a bonus area; mario3 pipes and doors; "
-              "shinobi section fades), and the fade back into play after a shinobi "
-              "death.",
+              "A transition inside a level with no player control: pipe or vine "
+              "travel, the exit from a bonus area, and the black screen while the next "
+              "area loads.",
               durational=True),
-    EventType("gym-retro_game",
+    EventType("Repetition",
               "One repetition of gameplay (one .bk2 file). This is the container row "
               "that carries `stim_file`; all other events fall inside its window.",
+              former=("gym-retro_game",),
               durational=True),
 ]

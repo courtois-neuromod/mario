@@ -285,13 +285,12 @@ def _transitions(series, predicate) -> List[int]:
     return out
 
 
-def generate(repvars: dict, level=None, outcome: Optional[str] = None,
+def generate(repvars: dict, outcome: Optional[str] = None,
              stim_file: Optional[str] = None, **defaults) -> "object":
     """Build the events DataFrame for one SMB1 repetition.
 
     Args:
         repvars: The repetition's ``_variables.json`` contents.
-        level: Level label to stamp on every row; defaults to ``repvars["level"]``.
         outcome: The summary ``Outcome``, used to gate the warp event.
         stim_file: The repetition's ``.bk2``; unused.
         **defaults: Extra columns copied onto every row (phase, Index*, stim_file).
@@ -302,8 +301,7 @@ def generate(repvars: dict, level=None, outcome: Optional[str] = None,
     port = PORT
     fs = FRAME_RATE
     d = _Vars(repvars, port)
-    acc = EventAccumulator(level if level is not None else repvars.get("level"), fs,
-                           **defaults)
+    acc = EventAccumulator(fs, **defaults)
 
     _actions(acc, repvars)
     _level_events(acc, d, port, outcome)
