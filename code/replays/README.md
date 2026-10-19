@@ -8,11 +8,17 @@ videogame datasets; what is specific to Super Mario Bros. (NES) lives in `code/g
 ## Installation
 
 ```bash
-python -m venv env
+python3.12 -m venv env
 source env/bin/activate
-git submodule update --init code/videogames_utils
+git submodule update --init code/videogames_utils stimuli
 pip install -r code/replays/requirements.txt
 ```
+
+This installs the exact environment the dataset's outputs were made in: Python 3.12, the
+package versions of `code/videogames_utils/requirements.lock`, and videogames_utils at the
+commit the dataset records. The replay and annotation scripts check all of it before they
+run, together with the dataset's own code and `stimuli`, and stop if anything differs;
+`--allow-unpinned` runs them anyway, with outputs that are not reproducible.
 
 The ROM and the integration (`data.json`, states, scenarios) are in
 `stimuli/SuperMarioBros-Nes/`.
