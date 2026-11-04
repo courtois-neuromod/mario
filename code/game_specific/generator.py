@@ -74,8 +74,11 @@ MUSIC_TIME_RUNNING_OUT = 0x40
 #: Game timer value at which the "hurry up" warning fires.
 TIMER_WARNING_VALUE = 100
 
-#: Emulator frame rate, read from the core with ``retro.make(game).em.get_screen_rate()``.
-FRAME_RATE = 60.099826520671
+#: The rate the game was displayed at during acquisition: the task paced the emulator on
+#: the screen's 60 Hz refresh, not at its native 60.0998 Hz. The task's own timestamps of
+#: the game steps (`level step` lines in the logs of 101 of the 120 sessions, 2021-06 to
+#: 2022-12) are at 60.000 Hz throughout.
+FRAME_RATE = 60.0
 
 
 @dataclass
