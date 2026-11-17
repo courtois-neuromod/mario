@@ -155,27 +155,25 @@ These TSV files (`*_desc-annotated_events.tsv`) contain game events aligned to f
 timing. They are generated from the per-frame RAM dumps in `gamelogs/*_variables.json` by
 `code/annotations/generate_annotations.py`, a thin front end over the shared
 [`videogames_utils.events`](https://github.com/courtois-neuromod/videogames_utils)
-package. Each row is either a **repetition** (`gym-retro_game`, which carries `stim_file`)
+package. Each row is either a **repetition** (`Repetition`, which carries `stim_file`)
 or a **game event** inside one.
 
-Three documents describe them, from short to exhaustive:
+Two documents describe them:
 
 - **`task-mario_events.json`** at the dataset root: the BIDS sidecar, with every column
   and every `trial_type` this game may emit.
 - **`code/annotations/README.md`**: generated from the same vocabulary, with the number
   of rows each event has in this dataset, the entries that are defined but never produced
-  and why, and the accuracy notes for this game.
-- [`docs/EVENT_REFERENCE.md`](https://github.com/courtois-neuromod/videogames_utils/blob/main/docs/EVENT_REFERENCE.md)
-  in `videogames_utils`: the cross-game reference, with the RAM address, value and
-  validation figure behind every event.
+  and why, and the RAM address, value and validation figure behind every event.
 
-**Columns:** `trial_type`, `level`, `onset`, `duration`, `frame_start`, `frame_stop`,
-`button`, `stim_file`. Per-repetition metadata (`phase`, `IndexInRun`, `IndexGlobal`,
-`IndexLevel`, `Outcome`) is not repeated on event rows; it lives in the repetition's
-`gamelogs/*_summary.json`, keyed by the `stim_file` of the container row.
+**Columns:** `trial_type`, `onset`, `duration`, `onset_in_video`, `frame_start`,
+`frame_stop`, `button`, `stim_file`. Per-repetition metadata (`phase`, `IndexInRun`,
+`IndexGlobal`, `IndexLevel`, `Outcome`) is not repeated on event rows; it lives in the
+repetition's `gamelogs/*_summary.json`, keyed by the `stim_file` of the container row.
 
-Onsets are computed at the console's true frame rate (60.099827 Hz, read from the
-emulator core) rather than the 60.0 Hz previously assumed.
+Onsets and durations are computed at 60 Hz, the rate at which the game was displayed
+until May 2022. Sessions from 2022-05-18 on were displayed at the console's native rate
+(60.0998 Hz).
 
 **Event types** are drawn from a controlled vocabulary shared by all four CNeuroMod
 videogame datasets, grouped as: player events (`PlayerDamaged`, `PlayerDied/*`,
@@ -189,11 +187,6 @@ environment (`PipeEntered`, `FlagpoleVisible`, `CastleVisible`,
 `TimerWarningStarted`), level events (`LevelStarted`, `LevelCompleted`,
 `LevelExited/Warp`) and controller actions (`Action/*`, with the raw button in the
 `button` column).
-
-> **Note on a vocabulary change.** Every `trial_type` was renamed relative to the first
-> release of these files. The former names (`Kill/stomp`, `Hit/life_lost`,
-> `Coin_collected`, `Powerup_started/*`, `JUMP`, ...) no longer appear. The full
-> old-to-new mapping is in `code/annotations/README.md`.
 
 ## Citation
 
