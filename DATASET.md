@@ -171,8 +171,9 @@ Two documents describe them:
 `IndexGlobal`, `IndexLevel`, `Outcome`) is not repeated on event rows; it lives in the
 repetition's `gamelogs/*_summary.json`, keyed by the `stim_file` of the container row.
 
-Onsets are computed at the console's true frame rate (60.099827 Hz, read from the
-emulator core) rather than the 60.0 Hz previously assumed.
+Onsets and durations are computed at 60 Hz, the rate at which the game was displayed
+until May 2022. Sessions from 2022-05-18 on were displayed at the console's native rate
+(60.0998 Hz).
 
 **Event types** are drawn from a controlled vocabulary shared by all four CNeuroMod
 videogame datasets, grouped as: player events (`PlayerDamaged`, `PlayerDied/*`,
