@@ -210,5 +210,5 @@ against an independent signal before being used:
 - **Super Mario All-Stars** — [Data Crystal's partial RAM map](https://datacrystal.tcrf.net/wiki/Super_Mario_All-Stars_(SNES)/RAM_map),
   plus the empirical finding that its object ids match SMB1's verbatim
 
-Cross-port agreement between the NES and SNES versions (V2): 15 of the 21 levels
-containing enemies yield identical rosters on the two consoles.
+Cross-port agreement between the NES and SNES versions is checked by V2, which compares
+the enemy roster of each level on the two consoles.
