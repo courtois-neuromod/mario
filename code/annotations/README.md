@@ -31,12 +31,12 @@ non-zero on any error. The replay sidecars must exist first
 |---|---|
 | `trial_type` | Event type, from the controlled vocabulary below. |
 | `onset` | Seconds from the start of the fMRI run. |
-| `duration` | Seconds. 0 for point events. |
+| `duration` | Seconds. 0 for point events. On a `Repetition` row, the length of its `.bk2` replay; `n/a` when the `.bk2` is missing. |
 | `onset_in_video` | Seconds from the first frame of the repetition's replay video (`gamelogs/*_recording.mp4`). |
 | `frame_start` | First emulator frame of the event, relative to its repetition. |
 | `frame_stop` | Last emulator frame of the event, relative to its repetition. |
 | `button` | Raw controller button behind an `Action/*` event; empty otherwise. |
-| `stim_file` | Path to the repetition's `.bk2` replay. Set on the `Repetition` row only. |
+| `stim_file` | Path to the repetition's `.bk2` replay. Set on the `Repetition` row only; `Missing File` for a repetition whose `.bk2` was lost. |
 
 Onsets are computed at the rate at which the game was displayed during acquisition
 (60.000000 Hz). Per-repetition metadata (`phase`, `IndexInRun`,
