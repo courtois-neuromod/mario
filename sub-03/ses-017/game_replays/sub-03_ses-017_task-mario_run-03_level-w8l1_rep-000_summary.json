@@ -1,0 +1,23 @@
+{
+    "Subject": "sub-03",
+    "Session": "ses-017",
+    "Run": "run-03",
+    "Level": "w8l1",
+    "MP4File": "sub-03/ses-017/game_replays/sub-03_ses-017_task-mario_run-03_level-w8l1_rep-000_recording.mp4",
+    "IndexInRun": 2,
+    "IndexGlobal": 312,
+    "IndexLevel": 10,
+    "Phase": "practice",
+    "Outcome": "failed/killed",
+    "Duration": 143.25,
+    "FrameCount": 8595,
+    "ScoreGained": 1560,
+    "LivesLost": 3,
+    "HitsTaken": 2,
+    "EnemiesDefeated": 10,
+    "CoinsCollected": 6,
+    "PowerupsCollected": 0,
+    "BricksSmashed": 0,
+    "DistanceTraveled": 4200,
+    "AverageSpeed": 29.319371727748692
+}

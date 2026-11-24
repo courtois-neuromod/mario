@@ -1,0 +1,23 @@
+{
+    "Subject": "sub-05",
+    "Session": "ses-009",
+    "Run": "run-05",
+    "Level": "w5l3",
+    "MP4File": "sub-05/ses-009/game_replays/sub-05_ses-009_task-mario_run-05_level-w5l3_rep-000_recording.mp4",
+    "IndexInRun": 4,
+    "IndexGlobal": 214,
+    "IndexLevel": 9,
+    "Phase": "practice",
+    "Outcome": "failed/fall",
+    "Duration": 55.833333333333336,
+    "FrameCount": 3350,
+    "ScoreGained": 160,
+    "LivesLost": 3,
+    "HitsTaken": 0,
+    "EnemiesDefeated": 2,
+    "CoinsCollected": 2,
+    "PowerupsCollected": 1,
+    "BricksSmashed": 0,
+    "DistanceTraveled": 1093,
+    "AverageSpeed": 19.576119402985075
+}

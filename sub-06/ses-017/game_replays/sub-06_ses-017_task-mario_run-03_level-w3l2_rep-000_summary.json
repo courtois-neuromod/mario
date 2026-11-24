@@ -1,0 +1,23 @@
+{
+    "Subject": "sub-06",
+    "Session": "ses-017",
+    "Run": "run-03",
+    "Level": "w3l2",
+    "MP4File": "sub-06/ses-017/game_replays/sub-06_ses-017_task-mario_run-03_level-w3l2_rep-000_recording.mp4",
+    "IndexInRun": 1,
+    "IndexGlobal": 392,
+    "IndexLevel": 17,
+    "Phase": "practice",
+    "Outcome": "cleared",
+    "Duration": 54.416666666666664,
+    "FrameCount": 3265,
+    "ScoreGained": 3305,
+    "LivesLost": 0,
+    "HitsTaken": 0,
+    "EnemiesDefeated": 19,
+    "CoinsCollected": 6,
+    "PowerupsCollected": 1,
+    "BricksSmashed": 1,
+    "DistanceTraveled": 3298,
+    "AverageSpeed": 60.60643185298622
+}

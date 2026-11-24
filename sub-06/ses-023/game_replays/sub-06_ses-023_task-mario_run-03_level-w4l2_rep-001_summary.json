@@ -1,0 +1,23 @@
+{
+    "Subject": "sub-06",
+    "Session": "ses-023",
+    "Run": "run-03",
+    "Level": "w4l2",
+    "MP4File": "sub-06/ses-023/game_replays/sub-06_ses-023_task-mario_run-03_level-w4l2_rep-001_recording.mp4",
+    "IndexInRun": 7,
+    "IndexGlobal": 523,
+    "IndexLevel": 21,
+    "Phase": "practice",
+    "Outcome": "incomplete/warp",
+    "Duration": 92.7,
+    "FrameCount": 5562,
+    "ScoreGained": 1090,
+    "LivesLost": 0,
+    "HitsTaken": 0,
+    "EnemiesDefeated": 0,
+    "CoinsCollected": 40,
+    "PowerupsCollected": 2,
+    "BricksSmashed": 18,
+    "DistanceTraveled": 770,
+    "AverageSpeed": 8.306364617044228
+}
