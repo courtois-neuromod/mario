@@ -2,6 +2,7 @@
   "AcquisitionMatrixPE": 104,
   "AcquisitionNumber": 1,
   "AcquisitionTime": "18:30:31.877500",
+  "B0FieldSource": "sub_03_ses_006_task_mario_run_01",
   "BandwidthPerPixelPhaseEncode": 17.17,
   "BaseResolution": 104,
   "BodyPartExamined": "BRAIN",

@@ -2,6 +2,7 @@
   "AcquisitionMatrixPE": 104,
   "AcquisitionNumber": 1,
   "AcquisitionTime": "17:33:51.352500",
+  "B0FieldIdentifier": "sub_01_ses_018_task_mario_run_01",
   "BandwidthPerPixelPhaseEncode": 17.17,
   "BaseResolution": 104,
   "BodyPartExamined": "BRAIN",
@@ -33,7 +34,12 @@
   "InstitutionName": "IUGM",
   "InstitutionalDepartmentName": "Department",
   "IntendedFor": [
-    "ses-018/func/sub-01_ses-018_task-mario_run-01_part-mag_bold.nii.gz"
+    "ses-018/func/sub-01_ses-018_task-mario_run-01_part-mag_bold.nii.gz",
+    "ses-018/func/sub-01_ses-018_task-mario_run-01_part-mag_sbref.nii.gz",
+    "ses-018/func/sub-01_ses-018_task-mario_run-02_part-mag_bold.nii.gz",
+    "ses-018/func/sub-01_ses-018_task-mario_run-02_part-mag_sbref.nii.gz",
+    "ses-018/func/sub-01_ses-018_task-mario_run-03_part-mag_bold.nii.gz",
+    "ses-018/func/sub-01_ses-018_task-mario_run-03_part-mag_sbref.nii.gz"
 ],
   "MRAcquisitionType": "2D",
   "MagneticFieldStrength": 3,
